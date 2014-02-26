@@ -1,0 +1,713 @@
+<html><head><link href="stylesheets/program.css" rel="stylesheet" title="program" type="text/css" /> <title>Source file</title></head><body bgcolor="#ffffff" text="#000000" link="#000000" vlink="#000000"><font family="Monospace"><pre><a name="TcfCreateViaPattern"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfCreateViaPattern</span> (@key cvId viaLayer fillBBox forceVia viaPattern)
+  (let (viaShapes pgdLines ogdLines adjLayers)
+ (setq adjLayers (TcfGetAdjacentLayers viaLayer))
+
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (TcfGetIsPGD adjLayers->bot)
+  (setq pgdLines (TcfGetTrueOverlaps cvId fillBBox nil (dbGetMaxHierDepth) ?userTempCV cvId ?returnCopies t ?lstLayers (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> x "drawing")) (TcfRemoveLstDuplicateItems (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (TcfGetFillerCellInfo adjLayers->bot))))))
+   (setq ogdLines (TcfGetTrueOverlaps cvId fillBBox nil (dbGetMaxHierDepth) ?userTempCV cvId ?returnCopies t ?lstLayers (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> x "drawing")) (TcfRemoveLstDuplicateItems (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (TcfGetFillerCellInfo adjLayers->bot))))))
+  ) 
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (TcfGetIsPGD adjLayers->bot)
+  (setq ogdLines (TcfGetTrueOverlaps cvId fillBBox nil (dbGetMaxHierDepth) ?userTempCV cvId ?returnCopies t ?lstLayers (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> x "drawing")) (TcfRemoveLstDuplicateItems (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (TcfGetFillerCellInfo adjLayers->top))))))
+   (setq pgdLines (TcfGetTrueOverlaps cvId fillBBox nil (dbGetMaxHierDepth) ?userTempCV cvId ?returnCopies t ?lstLayers (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> x "drawing")) (TcfRemoveLstDuplicateItems (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (TcfGetFillerCellInfo adjLayers->top))))))
+  ) 
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (dbIsId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> pgdLines))
+ (dbIsId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> ogdLines)))
+  (setq viaShapes (TccLayerVia ?cvId cvId
+ ?purpose (TcfGetDefaultLPPPurpose ?cvId cvId)
+ ?pgdLines pgdLines
+ ?ogdLines ogdLines
+ ?forceVia forceVia
+ ?viaPattern viaPattern))
+   (TccWarn "TcfCreateViaPattern" "Not shapes on the adjacent layers were found!")
+  ) 
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (dbIsId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> pgdLines)) (mapcar 'dbDeleteObject pgdLines))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (dbIsId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> ogdLines)) (mapcar 'dbDeleteObject ogdLines))
+
+ viaShapes
+  )) <a name="TcfCreateArrayLineMultiLPP"></a>
+<a name="TcfCreateArrayLineMultiLPP"></a><span><a href="../layout3func.html#TcfCreateArrayLineMultiLPP"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfCreateArrayLineMultiLPP</span> (@key
+  (cv nil)
+  (lpp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "poly" (TcfGetDefaultLPPPurpose)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "metal1" (TcfGetDefaultLPPPurpose))))
+  (CDSpacePropList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil))
+  (segProp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (times 15 (TccLayerInfo nil "minLengthY" "poly")))
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (TccLayerInfo nil "minSpacingY" "poly") (times 10 (TccLayerInfo nil "minLengthY" "poly")) (TccLayerInfo nil "minSpacingY" "poly"))))
+  (numTracks 5)
+ (trimNumTracks t)
+
+ (LegoLayer "metal0")
+  (LegoBlockPropList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil))
+  (numLegoBlocks 0)
+
+ (direction "V")
+  (offsetX 0.0)
+  (offsetY 0.0)
+  (shapesOnly t)
+
+ (offsetAlign "Trk")
+
+ (bridgeLine (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil))
+  (drawBoundingBox nil)
+  (debugMode nil)
+
+ (fillBBox nil)
+  (lstCutBBoxes nil)
+  (lstCutShapes nil)
+
+ (PitchPropList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (TccLayerInfo nil "minPitchX" "poly") (TccLayerInfo nil "minPitchX" "metal1")))
+  (Pitch (TccLayerInfo nil "minPitchX" "poly"))
+  (WXPropList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (TccLayerInfo nil "minWidthX" "poly")) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (TccLayerInfo nil "minWidthX" "metal1"))))
+  (WX (TccLayerInfo nil "minWidthX" "poly"))
+  ) 
+  "This function draws an array of lines with specific cut boxes and LPPs. Author: Abelardo Jara"
+  (let ((index 0) forIndex segWX pitch (spaceX 0.01) BlockSizeX outputDPL lstShapes lstShapesElem boundingBox BlockSizeY (TotalBlockSizeY 0.0) pitch yellowTccDebug greyTccDebug orangeTccDebug lstCutBBoxesFixed listofshapes m0Pitch trimmedshape (finalSize 0.0) numTracksPerBlock lstOrigOffsets)
+
+ (TccInfo "TcfCreateArrayLineMultiLPP" (sprintf nil "Starting on library %L and cell %L" (getSGq cv libName) (getSGq cv cellName)))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> CDSpacePropList) 2)
+  (setq CDSpacePropList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> CDSpacePropList) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> CDSpacePropList) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> CDSpacePropList) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> CDSpacePropList)))
+  ) 
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (oddp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> CDSpacePropList))
+  (setq CDSpacePropList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX322" title="R5RS Skill/Skill++ form">cdr</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> CDSpacePropList))))
+  ) 
+  (setq lstOrigOffsets (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> offsetX offsetY))
+
+  (setq m0Pitch (TccLayerInfo nil "minPitchY" "metal0"))
+
+  (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (listp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> LegoBlockPropList)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> LegoBlockPropList))
+   (TccInfo "TcfCreateArrayLineMultiLPP" (sprintf nil "Converting lego list %L to CD-space list" LegoBlockPropList))
+   (setq CDSpacePropList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (TcfGetLstTemplates2CDSpace LegoBlockPropList LegoLayer)))
+   (setq lpp (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> x (TcfGetDefaultLPPPurpose ?cvId cvId))) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (TcfGetLstTemplates2CDSpace LegoBlockPropList LegoLayer))))
+  ) 
+  (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> CDSpacePropList) CDSpacePropList)
+   (TccInfo "TcfCreateArrayLineMultiLPP" "Converting CD-space list to WX and PitchPropList")
+   (setq PitchPropList (TcfCDSpace2PitchPropList CDSpacePropList))
+   (setq WXPropList (TcfCDSpace2WXPropList CDSpacePropList))
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> trimNumTracks
+ (setq numTracks (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> CDSpacePropList) 2))
+  ) (TccInfo "TccCreateArrayLineMultiLPP" (sprintf nil "PitchPropList=%L" PitchPropList))
+  ) 
+  (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (listp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> LegoBlockPropList)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> LegoBlockPropList) (greaterp numLegoBlocks 0))
+   (setq numTracks (add1 (times numLegoBlocks (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> CDSpacePropList) 2))))
+   (setq numTracksPerBlock (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> WXPropList))
+   (fors index 0 (sub1 numTracks)
+   (setq indexmod (mod index numTracksPerBlock))
+   (setq finalSize (plus finalSize (nth (times 2 indexmod) CDSpacePropList)))
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (lessp index (sub1 numTracks))
+ (setq finalSize (plus finalSize (nth (plus (times 2 indexmod) 1) CDSpacePropList)))
+  )) (TccInfo "TcfCreateArrayLineMultiLPP" (sprintf nil "The final size of the complete pattern using %L lines is %L" numTracks finalSize))
+   (setq numTracks (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> CDSpacePropList) 2))
+  ) 
+  (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> trimNumTracks (isBBox fillBBox) (equal numTracks 0))
+   (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> LegoBlockPropList) LegoBlockPropList (stringp LegoLayer) (equal numLegoBlocks 0))
+  (setq numTracks (add1 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (TcfBeFrameCalculateNumTracks LegoLayer LegoBlockPropList
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "H")
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (trBBoxDims fillBBox))
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (trBBoxDims fillBBox))
+  ) ?extraGridFillerOnSides t))))
+  (TccInfo "TccCreateArrayLineMultiLPP" (sprintf nil "Calculated number of tracks for lego input = " numTracks))
+  ) 
+   (setq numTracksPerBlock (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> WXPropList))
+   (fors index 0 (sub1 numTracks)
+   (setq indexmod (mod index numTracksPerBlock))
+   (setq finalSize (plus finalSize (nth (times 2 indexmod) CDSpacePropList)))
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (lessp index (sub1 numTracks))
+ (setq finalSize (plus finalSize (nth (plus (times 2 indexmod) 1) CDSpacePropList)))
+  )) (TccInfo "TcfCreateArrayLineMultiLPP" (sprintf nil "The final size of the complete pattern using %L lines is %L" numTracks finalSize))
+   (setq numTracks (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> CDSpacePropList) 2))
+  ) 
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> WXPropList)
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (atom (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> WXPropList))
+   (setq WX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> WXPropList))
+ (setq WX WXPropList))
+   (setq WX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> WX))))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX110" title="R5RS Skill/Skill++ form">cond</a>
+  ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a>
+ (listp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> PitchPropList))
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> PitchPropList))
+   (setq pitch (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX322" title="R5RS Skill/Skill++ form">cdr</a> PitchPropList))
+   (setq pitch (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX322" title="R5RS Skill/Skill++ form">cdr</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> pitch))))
+   (setq Pitch (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">caar</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> PitchPropList))))
+   (setq Pitch (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">caar</a> PitchPropList) Pitch)))
+  ((<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> PitchPropList)
+   (setq pitch PitchPropList))
+  (t
+   (setq pitch Pitch)))
+
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> CDSpacePropList) CDSpacePropList)
+  (setq BlockSizeX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'plus CDSpacePropList))
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> PitchPropList) 1)
+ (setq BlockSizeX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> PitchPropList))
+  (setq BlockSizeX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'plus PitchPropList))
+  )) 
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> CDSpacePropList) CDSpacePropList)
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (atom Pitch) (equal offsetAlign "CD"))
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V")
+ (setq offsetX (difference offsetX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (difference Pitch (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> CDSpacePropList)) 2)))
+  (setq offsetY (difference offsetY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (difference Pitch (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> CDSpacePropList)) 2)))
+  )) ) 
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (atom (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> segProp))
+  (fors i 0 (sub1 numTracks)
+  (setq segWX (nth (mod i (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> WX)) WX))
+  (setq spaceX (difference BlockSizeX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'max segWX)))
+  (setq lstShapesElem (<a class="applied-name" href="layout3func-1.html#TcfCreateCustomTrack" title="layout3func">TcfCreateCustomTrack</a> cv pitch segWX segProp (add1 i) lpp
+  (<a class="applied-name" href="layout3func-1.html#TcfBeCellGetPitchTrackOriginX" title="layout3func">TcfBeCellGetPitchTrackOriginX</a> pitch i numTracks Pitch)
+  Pitch numTracks shapesOnly direction offsetX offsetY fillBBox spaceX finalSize lstOrigOffsets))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (listp lstShapesElem)
+   (setq lstShapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX334" title="R5RS Skill/Skill++ form">append</a> lstShapes lstShapesElem))
+ (setq lstShapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> lstShapesElem lstShapes))
+  )) 
+   (progn (while (TccGEQP (pcFix (difference numTracks index)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> segProp))
+ (foreachs segList segProp
+  segWX <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (nth (mod index (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> WX)) WX)
+  (setq spaceX (difference BlockSizeX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'max segWX)))
+  (setq lstShapesElem (<a class="applied-name" href="layout3func-1.html#TcfCreateCustomTrack" title="layout3func">TcfCreateCustomTrack</a> cv pitch
+  segWX segList (add1 index) lpp
+  (<a class="applied-name" href="layout3func-1.html#TcfBeCellGetPitchTrackOriginX" title="layout3func">TcfBeCellGetPitchTrackOriginX</a> pitch index numTracks Pitch)
+  Pitch numTracks shapesOnly direction offsetX offsetY fillBBox spaceX finalSize lstOrigOffsets))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (listp lstShapesElem)
+   (setq lstShapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX334" title="R5RS Skill/Skill++ form">append</a> lstShapes lstShapesElem))
+ (setq lstShapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> lstShapesElem lstShapes))
+  ) (setq index (add1 index)))
+  ) (setq forIndex (difference numTracks index 1))
+  (fors i 0 forIndex
+  (setq segWX (nth (mod index (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> WX)) WX))
+  (setq spaceX (difference BlockSizeX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'max segWX)))
+  (setq lstShapesElem (<a class="applied-name" href="layout3func-1.html#TcfCreateCustomTrack" title="layout3func">TcfCreateCustomTrack</a> cv pitch
+  segWX (nth i segProp) (add1 index) lpp
+  (<a class="applied-name" href="layout3func-1.html#TcfBeCellGetPitchTrackOriginX" title="layout3func">TcfBeCellGetPitchTrackOriginX</a> pitch index numTracks Pitch)
+  Pitch numTracks shapesOnly direction offsetX offsetY fillBBox spaceX finalSize lstOrigOffsets))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (listp lstShapesElem)
+   (setq lstShapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX334" title="R5RS Skill/Skill++ form">append</a> lstShapes lstShapesElem))
+ (setq lstShapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> lstShapesElem lstShapes))
+  ) (setq index (add1 index))
+  )) ) (when (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> bridgeLine)
+   (<a class="applied-name" href="layout3func-1.html#TcfBeCellBridge" title="layout3func">TcfBeCellBridge</a> cv bridgeLine segProp numTracks))
+
+  (unless (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX118" title="R5RS Skill/Skill++ form">or</a> shapesOnly (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> (dbIsId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> lstShapes))))
+   (setq boundingBox (trBBoxUnion (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (getSGq x bBox)) lstShapes)))
+   (rodCreateRect ?cvId cv
+   ?layer (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "red" (TcfGetDefaultLPPDebugPurpose ?cvId cv))
+   ?name "meSegsCover"
+   ?bBox boundingBox )) 
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (atom (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> segProp)) (setq segProp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> segProp)))
+ (foreachs elemseg segProp
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> elemseg) 1)
+   (setq BlockSizeY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> elemseg))
+ (setq BlockSizeY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'plus elemseg))
+  ) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (greaterp BlockSizeY TotalBlockSizeY)
+   (setq TotalBlockSizeY BlockSizeY)
+  )) 
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> drawBoundingBox
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> fillBBox
+   (dbCreateRect cv (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "chkBoundary" "boundary") fillBBox)
+ (dbCreateRect cv (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "chkBoundary" "boundary")
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> offsetX offsetY)
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "H")
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+  (plus offsetX TotalBlockSizeY)
+  (plus offsetY
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> CDSpacePropList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> CDSpacePropList))
+   (times (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'plus CDSpacePropList)
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> numTracks (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> CDSpacePropList) 2)))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (greaterp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> PitchPropList) 1)
+  (times (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> numTracks (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> PitchPropList)))
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'plus PitchPropList))
+   (times numTracks (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> PitchPropList))
+  )) )) 
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+   (plus offsetX
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> CDSpacePropList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> CDSpacePropList))
+ (times (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'plus CDSpacePropList)
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> numTracks (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> CDSpacePropList) 2)))
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (greaterp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> PitchPropList) 1)
+   (times numTracks (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'plus PitchPropList))
+ (times numTracks (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> PitchPropList))
+  )) ) (plus offsetY TotalBlockSizeY)
+  )) )) )) 
+  (foreachs elem lstCutBBoxes
+  (setq orangeTccDebug (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> (dbCreateRect cv
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "orange" (TcfGetDefaultLPPDebugPurpose ?cvId cv))
+ elem
+  ) orangeTccDebug))
+  ) (setq greyTccDebug (dbLayerOr cv (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "grey" (TcfGetDefaultLPPDebugPurpose ?cvId cv)) orangeTccDebug lstCutShapes))
+ (foreachs elem (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (getSGq x bBox)) greyTccDebug) (foreachs layerelem lpp
+   (setq listofshapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX334" title="R5RS Skill/Skill++ form">append</a> listofshapes (dbGetTrueOverlaps
+  cv
+  elem
+  layerelem
+  0:32
+  )))) (when listofshapes
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V")
+
+  (progn
+ (setq xfixed_ll (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'min (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (xCoord (lowerLeft (getSGq x bBox)))) listofshapes )))
+ (setq xfixed_ur (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'max (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (xCoord (upperRight (getSGq x bBox)))) listofshapes )))
+ (setq yfixed_ll (yCoord (lowerLeft elem)))
+ (setq yfixed_ur (yCoord (upperRight elem)))
+  ) (progn
+  (setq yfixed_ll (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'min (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (yCoord (lowerLeft (getSGq x bBox)))) listofshapes )))
+  (setq yfixed_ur (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'max (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (yCoord (upperRight (getSGq x bBox)))) listofshapes )))
+  (setq xfixed_ll (xCoord (lowerLeft elem)))
+  (setq xfixed_ur (xCoord (upperRight elem)))
+  )) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX118" title="R5RS Skill/Skill++ form">or</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal direction "V") (lessp m0Pitch xfixed_ur-xfixed_ll)) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal direction "H") (lessp m0Pitch  yfixed_ur-yfixed_ll)))
+  (setq lstCutBBoxesFixed (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX334" title="R5RS Skill/Skill++ form">append</a> lstCutBBoxesFixed (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> xfixed_ll yfixed_ll) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> xfixed_ur yfixed_ur)) )))
+  )) ) 
+  (foreachs elem lstCutBBoxesFixed
+  (setq yellowTccDebug (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> (dbCreateRect cv (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "yellow" (TcfGetDefaultLPPDebugPurpose ?cvId cv))
+ elem) yellowTccDebug))
+  ) 
+  (foreachs shape listofshapes
+  (when (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> shape lstShapes)
+
+  (setq trimmedshape (dbLayerAndNot cv (getSGq shape lpp) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> shape) yellowTccDebug))
+
+  (setq lstShapes (setof element lstShapes (nequal element shape)))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (listp trimmedshape)
+  (setq lstShapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX334" title="R5RS Skill/Skill++ form">append</a> lstShapes trimmedshape))
+   (setq lstShapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> trimmedshape lstShapes))
+  ) 
+  (dbDeleteObject shape)
+  )) 
+  (unless debugMode
+   (mapcar 'dbDeleteObject greyTccDebug)
+   (mapcar 'dbDeleteObject orangeTccDebug)
+   (mapcar 'dbDeleteObject yellowTccDebug)
+  ) 
+ (TccInfo "TcfCreateArrayLineMultiLPP" "Finishing...")
+
+  lstShapes
+  )) <a name="TcfCreateCustomTrack"></a>
+<a name="TcfCreateCustomTrack"></a><span><a href="../layout3func.html#TcfCreateCustomTrack"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfCreateCustomTrack</span> (cv Pitch WX segProp TrackNum lpp xCoord globalPitch numTracks shapesOnly direction offsetX offsetY fillBBox spaceX finalSize lstOrigOffsets @key (drawTrackRods nil))
+  (let (index segList gapList (y 0.0) segWX segWY segSpcY segNa TckNa spaceY BlockSizeY lstShapes lstShapesElem)
+ (setq index 0)
+ (foreachs item segProp
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (evenp index)
+   (setq segList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> item segList))
+ (setq gapList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> item gapList)))
+  (setq index (add1 index))
+  ) (setq gapList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> 0.0 gapList))
+ (setq segList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> segList))
+ (setq gapList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> gapList))
+ (fors j 0 (sub1 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> segList))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> segProp) 1)
+  (setq BlockSizeY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> segProp))
+   (setq BlockSizeY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'plus segProp))
+  ) (setq segWX (nth (mod (plus j (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> WX)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> WX)) WX))
+ (setq segWY (nth j segList))
+ (setq segSpcY (nth j gapList))
+ (setq spaceY (difference BlockSizeY segWY))
+ (setq segNa (get_pname concat("B" j "T" TrackNum)))
+ (when (nequal segWY 0.0)
+   (setq lstShapesElem (<a class="applied-name" href="layout3func-1.html#TcfBeGrid" title="layout3func">TcfBeGrid</a> cv
+ lpp
+ (<a class="applied-name" href="layout3func-1.html#TcfBeCellGetPitch" title="layout3func">TcfBeCellGetPitch</a> Pitch (sub1 TrackNum) numTracks globalPitch)
+ segWX
+ segWY
+ segNa
+ (rodAddPoints (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> xCoord y) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> y xCoord)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> offsetX offsetY))
+ shapesOnly
+ direction
+ fillBBox
+ spaceX
+ spaceY
+ finalSize
+ ?lstOrigOffsets lstOrigOffsets))
+
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (listp lstShapesElem)
+ (setq lstShapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX334" title="R5RS Skill/Skill++ form">append</a> lstShapes lstShapesElem))
+  (setq lstShapes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> lstShapesElem lstShapes))
+  )) (unless (equal j (sub1 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> segList)))
+   (setq y (plus y segWY segSpcY)))
+  ) 
+  (when drawTrackRods
+   (setq TckNa (get_pname (concat "Trk" TrackNum)))
+   (rodCreateRect
+ ?cvId cv
+ ?name TckNa
+ ?layer (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "background" "drawing")
+ ?width (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (atom Pitch)
+   Pitch
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a>
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX429" title="R5RS Skill/Skill++ form">eval</a>
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX87" title="R5RS Skill/Skill++ form">quote</a> plus) (<a class="applied-name" href="layout3func-1.html#TcfBeCellGetPitch" title="layout3func">TcfBeCellGetPitch</a> Pitch (sub1 TrackNum) numTracks globalPitch)))
+  2.0))
+ ?length (plus y segWY)
+ ?origin (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> xCoord 0.0))
+  ) 
+  lstShapes
+  ))<a name="TcfBeGrid"></a>
+<a name="TcfBeGrid"></a><span><a href="../layout3func.html#TcfBeGrid"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBeGrid</span> (cv lpp pitch segWX segWY segName origin shapesOnly direction fillBBox spaceX spaceY finalSize @key (lstOrigOffsets nil))
+  (let (bBox lppSecondary lineShapes)
+  (setq bBox (rodAddPoints origin
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V")
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (atom pitch)
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (difference pitch segWX) 2.0) 0)
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a>
+ (difference
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> pitch)
+  segWX)
+ 2.0)
+   0))
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (atom pitch)
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 0 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (difference pitch segWX) 2.0))
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 0.0
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a>
+ (difference
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> pitch)
+  segWX)
+ 2.0)
+  ))
+  ))) (setq bBox (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> bBox (rodAddPoints bBox (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> segWX segWY))))
+
+  (unless (atom (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> lpp))
+   (setq lpp (nth (mod (sub1 (atoi (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (parseString (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (parseString segName "B")) "T")))) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> lpp)) lpp)))
+
+ (unless (atom (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> lpp))
+   (setq lppSecondary (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX322" title="R5RS Skill/Skill++ form">cdr</a> lpp))
+   (setq lpp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> lpp)))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> shapesOnly
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (isBBox fillBBox)
+   (progn
+  (TccInfo "TcfBeGrid" (sprintf nil "Filling %L shapes (width=%L, height=%L) over fillBBox = %L"
+  lpp
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") segWX segWY)
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") segWY segWX)
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (rodAddPoints
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> fillBBox)
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> bBox)
+  ) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (greaterp finalSize 0.0)
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "H")
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+  (xCoord (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> fillBBox)) (plus (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> lstOrigOffsets) finalSize))
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+   (plus (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> lstOrigOffsets) finalSize) (yCoord (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> fillBBox)))
+  ) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> fillBBox)
+  )) ))
+  (setq lineShapes (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (rodFillBBoxWithRects ?cvId cv
+   ?layer lpp
+   ?width (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") segWX segWY)
+   ?length (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") segWY segWX)
+   ?fillBBox (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (rodAddPoints
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> fillBBox)
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> bBox)
+  ) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (greaterp finalSize 0.0)
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "H")
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+ (xCoord (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> fillBBox)) (plus (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> lstOrigOffsets) finalSize))
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+  (plus (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> lstOrigOffsets) finalSize) (yCoord (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> fillBBox)))
+  ) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> fillBBox)
+  )) ?gap "minimum"
+   ?spaceX  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") spaceX spaceY)
+   ?spaceY (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") spaceY spaceX)))))
+  ) (progn
+   (rodCreateRect
+ ?cvId cv
+ ?name (get_pname (concat "meSeg_" segName))
+ ?layer lpp
+ ?width (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") segWX segWY)
+ ?length (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") segWY segWX)
+ ?origin (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> bBox))
+   (setq lineShapes (getSGq (rodGetObj (get_pname (concat "meSeg_" segName)) cv) dbId))
+   (rodUnNameShape (rodGetObj (get_pname (concat "meSeg_" segName)) cv))
+  ) 
+  ) (progn
+  (rodCreateRect
+   ?cvId cv
+   ?name (get_pname (concat "meSeg_" segName))
+   ?layer lpp
+   ?width (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") segWX segWY)
+   ?length (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "V") segWY segWX)
+   ?origin (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> bBox))
+  (setq lineShapes (getSGq (rodGetObj (get_pname (concat "meSeg_" segName))) dbId))
+  )) 
+  (foreachs elem lppSecondary
+  (dbCreateRect cv elem bBox)) 
+  lineShapes
+  )) 
+<a name="TcfBeCellGetPitch"></a><a name="TcfBeCellGetPitch"></a><span><a href="../layout3func.html#TcfBeCellGetPitch"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBeCellGetPitch</span> (PitchList currentTrack totalTracks globalPitch)
+  (let (globalPitchAll)
+ (setq globalPitchAll globalPitch)
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (atom PitchList)
+  PitchList
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX110" title="R5RS Skill/Skill++ form">cond</a>
+  ((TccEQP currentTrack 0)
+  (when (listp globalPitchAll)
+ (setq globalPitch (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> globalPitchAll)))
+ (when (oddp
+   (pcFix
+ (times
+  globalPitch
+  (pcFix (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> 1 (TccGetGrid))))))
+ (setq globalPitch (difference globalPitch (TccGetGrid))))
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+   globalPitch
+   (nth (mod currentTrack (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> PitchList)) PitchList)))
+  ((TccEQP currentTrack (sub1 totalTracks))
+ (when (listp globalPitchAll)
+ (setq globalPitch (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> globalPitchAll)))
+  (when (oddp
+   (pcFix
+ (times
+  globalPitch
+  (pcFix (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> 1 (TccGetGrid))))))
+ (setq globalPitch (plus globalPitch (TccGetGrid))))
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+   (nth (mod (sub1 currentTrack) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> PitchList)) PitchList)
+   globalPitch))
+  (t
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+   (nth (mod (sub1 currentTrack) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> PitchList)) PitchList)
+   (nth (mod currentTrack (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> PitchList)) PitchList)))))))
+
+<a name="TcfBeCellGetPitchTrackOriginX"></a><a name="TcfBeCellGetPitchTrackOriginX"></a><span><a href="../layout3func.html#TcfBeCellGetPitchTrackOriginX"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBeCellGetPitchTrackOriginX</span> (PitchList currentTrack totalTracks globalPitch)
+  (let ((x 0.0))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (atom PitchList)
+  (setq x (times currentTrack PitchList))
+   (fors i 0 (difference currentTrack 1)
+   (setq x (plus x
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a>
+   (plus
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (<a class="applied-name" href="layout3func-1.html#TcfBeCellGetPitch" title="layout3func">TcfBeCellGetPitch</a> PitchList i totalTracks globalPitch))
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (<a class="applied-name" href="layout3func-1.html#TcfBeCellGetPitch" title="layout3func">TcfBeCellGetPitch</a> PitchList i totalTracks globalPitch)))
+   2.0)))))
+ x))
+
+<a name="TcfBeCellBridgeAuto"></a><a name="TcfBeCellBridgeAuto"></a><span><a href="../layout3func.html#TcfBeCellBridgeAuto"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBeCellBridgeAuto</span> (firstSeg
+ secondSeg
+ @key
+ (cvId nil)
+ (firstHandle nil)
+ (firstSegOffsetX 0.0)
+ (firstSegOffsetY 0.0)
+ (secondHandle nil)
+ (secondSegOffsetX 0)
+ (secondSegOffsetY 0)
+ (layer nil)
+ (purpose (TcfGetDefaultLPPPurpose))
+ (name nil)
+ (index nil))
+
+  (let (firstSegBT secondSegBT
+ leftSeg leftHandle leftOffset
+ rightSeg rightHandle rightOffset
+ topSeg topOffset
+ botSeg botOffset
+ firstSegOffset secondSegOffset)
+ (TccDebug "TcfBeCellBridgeAuto" "started")
+
+  (unless (nindex firstSeg "_")
+   (setq firstSeg (strcat "meSeg_" firstSeg)))
+ (unless (nindex secondSeg "_")
+   (setq secondSeg (strcat "meSeg_" secondSeg)))
+
+  (setq firstSegOffset (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> firstSegOffsetX firstSegOffsetY))
+ (setq secondSegOffset (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> secondSegOffsetX secondSegOffsetY))
+
+  (setq firstSegBT (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+ (atoi (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (parseString (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (parseString firstSeg "B")) "T")))
+ (atoi (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (parseString firstSeg "T")))))
+ (setq secondSegBT (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+  (atoi (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (parseString (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (parseString secondSeg "B")) "T")))
+  (atoi (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (parseString secondSeg "T")))))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX110" title="R5RS Skill/Skill++ form">cond</a>
+  ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a>  (TccEQP (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> firstSegBT) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> secondSegBT))
+ (TccGreaterp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> firstSegBT) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> secondSegBT)))
+   (setq topSeg firstSeg)
+   (setq topOffset firstSegOffset)
+   (setq botSeg secondSeg)
+   (setq botOffset secondSegOffset))
+  ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a>  (TccEQP (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> firstSegBT) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> secondSegBT))
+ (TccLessp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> firstSegBT) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> secondSegBT)))
+   (setq botSeg firstSeg)
+   (setq botOffset firstSegOffset)
+   (setq topSeg secondSeg)
+   (setq topOffset secondSegOffset))
+  ((TccGreaterp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> firstSegBT) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> secondSegBT)) (setq rightSeg firstSeg)
+   (setq rightOffset firstSegOffset)
+   (setq leftSeg secondSeg)
+   (setq leftOffset secondSegOffset))
+  ((TccLessp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> firstSegBT) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> secondSegBT)) (setq leftSeg firstSeg)
+   (setq leftOffset firstSegOffset)
+   (setq rightSeg secondSeg)
+   (setq rightOffset secondSegOffset)))
+
+  (unless (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> topSeg botSeg)
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX110" title="R5RS Skill/Skill++ form">cond</a>
+ ((TccGEQP (rodPointY (getSGq (rodGetObj leftSeg cvId) lowerCenter))
+   (rodPointY (getSGq (rodGetObj rightSeg cvId) upperCenter)))
+  (setq leftHandle "lowerLeft")
+  (setq rightHandle "upperRight"))
+ ((TccGEQP   (rodPointY (getSGq (rodGetObj rightSeg cvId) lowerCenter))
+   (rodPointY (getSGq (rodGetObj leftSeg cvId) upperCenter)))
+  (setq leftHandle "upperLeft")
+  (setq rightHandle "lowerRight"))
+ ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (TccGreaterp
+ (rodPointY (getSGq (rodGetObj leftSeg cvId) upperCenter))
+ (rodPointY (getSGq (rodGetObj rightSeg cvId) upperCenter)))
+   (TccLessp
+ (rodPointY (getSGq (rodGetObj rightSeg cvId) lowerCenter))
+ (rodPointY (getSGq (rodGetObj leftSeg cvId) lowerCenter)))
+   (TccGreaterp
+ (rodPointY (getSGq (rodGetObj rightSeg cvId) upperCenter))
+ (rodPointY (getSGq (rodGetObj leftSeg cvId) lowerCenter))))
+  (setq leftHandle "lowerRight")
+  (setq rightHandle "upperLeft"))
+ ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (TccGreaterp
+ (rodPointY (getSGq (rodGetObj rightSeg cvId) upperCenter))
+ (rodPointY (getSGq (rodGetObj leftSeg cvId) upperCenter)))
+   (TccLessp
+ (rodPointY (getSGq (rodGetObj leftSeg cvId) lowerCenter))
+ (rodPointY (getSGq (rodGetObj rightSeg cvId) lowerCenter)))
+   (TccGreaterp
+ (rodPointY (getSGq (rodGetObj leftSeg cvId) upperCenter))
+ (rodPointY (getSGq (rodGetObj rightSeg cvId) lowerCenter))))
+  (setq leftHandle "upperRight")
+  (setq rightHandle "lowerLeft"))
+ ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (TccGEQP
+ (rodPointY (getSGq (rodGetObj leftSeg cvId) upperCenter))
+ (rodPointY (getSGq (rodGetObj rightSeg cvId) upperCenter)))
+   (TccLEQP
+ (rodPointY (getSGq (rodGetObj leftSeg cvId) lowerCenter))
+ (rodPointY (getSGq (rodGetObj rightSeg cvId) lowerCenter))))
+  (setq leftHandle "lowerRight")
+  (setq rightHandle "upperLeft")
+  (setq leftOffset (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> leftOffset)
+  (plus
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> leftOffset)
+   (TccGetRodDistY leftSeg rightSeg ?ctId cvId ?firstHandle leftHandle ?secondHandle "lowerLeft")))))
+ ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (TccGEQP
+ (rodPointY (getSGq (rodGetObj rightSeg cvId) upperCenter))
+ (rodPointY (getSGq (rodGetObj leftSeg cvId) upperCenter)))
+   (TccLEQP
+ (rodPointY (getSGq (rodGetObj rightSeg cvId) lowerCenter))
+ (rodPointY (getSGq (rodGetObj leftSeg cvId) lowerCenter))))
+  (setq leftHandle "lowerRight")
+  (setq rightHandle "upperLeft")
+  (setq rightOffset (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> rightOffset)
+   (minus
+ (plus
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> rightOffset)
+  (TccGetRodDistY leftSeg rightSeg ?ctId cvId ?firstHandle "upperRight" ?secondHandle rightHandle))))))
+ (t
+  (TccWarn "TcfBeCellBridgeAuto" (sprintf nil "Unhandled segment relationship between %L %L" firstSeg secondSeg)))))
+ (TccDebug "TcfBeCellBridgeAuto" "finished")
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> topSeg botSeg)
+  (<a class="applied-name" href="layout3func-1.html#TcfBeCellBridgeDraw" title="layout3func">TcfBeCellBridgeDraw</a> topSeg
+  botSeg
+  ?firstHandle "lowerRight"
+  ?firstSegOffsetX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> topOffset)
+  ?firstSegOffsetY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> topOffset)
+  ?secondHandle "upperLeft"
+  ?secondSegOffsetX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> botOffset)
+  ?secondSegOffsetY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> botOffset)
+  ?layer layer
+  ?purpose purpose
+  ?name name
+  ?index index
+  ?cvId cvId)
+   (<a class="applied-name" href="layout3func-1.html#TcfBeCellBridgeDraw" title="layout3func">TcfBeCellBridgeDraw</a> leftSeg
+   rightSeg
+   ?firstHandle leftHandle
+   ?firstSegOffsetX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> leftOffset)
+   ?firstSegOffsetY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> leftOffset)
+   ?secondHandle rightHandle
+   ?secondSegOffsetX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> rightOffset)
+   ?secondSegOffsetY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> rightOffset)
+   ?layer layer
+   ?purpose purpose
+   ?name name
+   ?index index
+   ?cvId cvId))))
+
+<a name="TcfBeCellBridgeDraw"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBeCellBridgeDraw</span> (firstSeg
+ secondSeg
+ @key
+ (cvId nil)
+ (firstHandle nil)
+ (firstSegOffsetX 0.0)
+ (firstSegOffsetY 0.0)
+ (secondHandle nil)
+ (secondSegOffsetX 0.0)
+ (secondSegOffsetY 0.0)
+ (layer nil)
+ (purpose (TcfGetDefaultLPPPurpose))
+ (name nil)
+ (index nil))
+  (let (obj )
+  (unless (nindex firstSeg "_")
+   (setq firstSeg (strcat "meSeg_" firstSeg)))
+ (unless (nindex secondSeg "_")
+   (setq secondSeg (strcat "meSeg_" secondSeg)))
+ (rodCreateRect
+  ?cvId cvId
+  ?name (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> name index)
+   (strcat name "." (concat (add1 index)))
+ nil)
+  ?layer (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> layer
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> layer purpose)
+  (getSGq (getSGq (rodGetObj firstSeg cvId) dbId) lpp))
+  ?bBox (TccNormalizeBBox
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+ (rodAddPoints
+  (getSG (rodGetObj firstSeg cvId) firstHandle)
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> firstSegOffsetX firstSegOffsetY))
+ (rodAddPoints
+  (getSG (rodGetObj secondSeg cvId) secondHandle)
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> secondSegOffsetX secondSegOffsetY)))))))
+
+<a name="TcfBeCellBridge"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBeCellBridge</span> (cvId bridgeList segProp numTracks)
+  (let (addArgs funCall forEnd)
+ (TccDebug "TcfBeCellBridge" "started")
+ (setq forEnd (pcFix (TcfPutOnGridCeiling (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> numTracks (times (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> segProp) 1.0)))))
+ (mapcar
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>)
+ (fors i 0 forEnd
+ (unless (zerop i)
+   (setq x (<a class="applied-name" href="layout3func-1.html#TcfBeCellGetBridgeRepeat" title="layout3func">TcfBeCellGetBridgeRepeat</a> x (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> segProp))))
+ (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a>
+  (TccLEQP (atoi (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (parseString (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> x) "T"))) numTracks)
+  (TccLEQP (atoi (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (parseString (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> x) "T"))) numTracks))
+   (setq funCall (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> ?cvId cvId))
+   (foreachs elem (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX322" title="R5RS Skill/Skill++ form">cdr</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX87" title="R5RS Skill/Skill++ form">quote</a> @key) (arglist <a class="applied-name" href="layout3func-1.html#TcfBeCellBridgeDraw" title="layout3func">TcfBeCellBridgeDraw</a>)))
+ (unless (atom elem)
+   (setq elem (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> elem)))
+ (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a>
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> (equal elem (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX87" title="R5RS Skill/Skill++ form">quote</a> cvId)))
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (concat (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX87" title="R5RS Skill/Skill++ form">quote</a> ?) elem) x))
+   (setq funCall (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (concat (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX87" title="R5RS Skill/Skill++ form">quote</a> ?) elem) x)) funCall))
+   (setq funCall (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> (concat (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX87" title="R5RS Skill/Skill++ form">quote</a> ?) elem) funCall))))
+   (setq funCall (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> i funCall))
+   (setq funCall (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> ?index funCall))
+   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a>
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX338" title="R5RS Skill/Skill++ form">memq</a> ?firstHandle x)
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX338" title="R5RS Skill/Skill++ form">memq</a> ?secondHandle x))
+ (setq addArgs (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX87" title="R5RS Skill/Skill++ form">quote</a> TcfBeCellBridgeDraw) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> x) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> x))))
+  (setq addArgs (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX87" title="R5RS Skill/Skill++ form">quote</a> TcfBeCellBridgeAuto) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> x) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> x)))))
+   (foreachs elem addArgs
+ (setq funCall (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> elem funCall)))
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX429" title="R5RS Skill/Skill++ form">eval</a> funCall (theEnvironment)))))
+  bridgeList)))
+
+<a name="TcfBeCellGetBridgeRepeat"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBeCellGetBridgeRepeat</span> (bridgeListElem increment)
+  (let (newSeg1 newSeg2)
+ (setq newSeg1 (<a class="applied-name" href="layout3func-1.html#TcfBeCellIncrementBridgeSegName" title="layout3func">TcfBeCellIncrementBridgeSegName</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> bridgeListElem) increment))
+ (setq newSeg2 (<a class="applied-name" href="layout3func-1.html#TcfBeCellIncrementBridgeSegName" title="layout3func">TcfBeCellIncrementBridgeSegName</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> bridgeListElem) increment))
+ (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> newSeg1 newSeg2 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cddr</a> bridgeListElem)))))
+
+<a name="TcfBeCellIncrementBridgeSegName"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBeCellIncrementBridgeSegName</span> (segName increment)
+  (get_pname
+   (concat
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (parseString segName "T"))
+ "T"
+ (plus
+  (atoi (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (parseString segName "T")))
+  increment))))
+</pre></font><div>&nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p></div></body></html>

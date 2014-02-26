@@ -1,0 +1,8 @@
+#!/bin/sh
+# This script was created by make-mzscheme-launcher
+
+# {{{ bindir
+bindir="/p/advda/elisp/doctool/mzscheme//bin"
+# }}} bindir
+
+exec "${bindir}/mzscheme" -N "$0" '-qmvL-' 'mzpp-run.ss' 'preprocessor'  ${1+"$@"}

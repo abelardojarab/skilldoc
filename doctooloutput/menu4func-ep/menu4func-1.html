@@ -1,0 +1,348 @@
+<html><head><link href="stylesheets/program.css" rel="stylesheet" title="program" type="text/css" /> <title>Source file</title></head><body bgcolor="#ffffff" text="#000000" link="#000000" vlink="#000000"><font family="Monospace"><pre><a name="TctFrmAddIDPurposes"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrmAddIDPurposes</span> (obj )
+  (let (libf cells purlist idform defaultPurposeLst fullCV)
+
+ (foreachs elemi (TcfGetDefaultLPPFillerKeepGenAwayPurpose)
+  (setq defaultPurposeLst (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> (strcat elemi " ") defaultPurposeLst))
+  ) 
+ (setq libf (hiCreateStringField
+ ?name 'libf
+ ?prompt "Library"
+ ?defValue (geGetEditCellView)~>libName
+ ?editable t))
+ (setq cells (hiCreateStringField
+  ?name 'cells
+  ?prompt "Cells"
+  ?defValue (geGetEditCellView)~>cellName
+  ?editable t))
+ (setq purlist (hiCreateStringField
+    ?name 'purlist
+    ?prompt "Purposes"
+    ?defValue (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX411" title="R5RS Skill/Skill++ form">apply</a> 'strcat defaultPurposeLst)
+    ?editable t))
+ (setq fullCV (hiCreateBooleanButton
+   ?name 'fullCV
+   ?buttonText "Full CellView"
+   ?defValue nil
+   ?enabled t))
+ (setq idform (hiCreateAppForm
+   ?name 'idform
+   ?formTitle "Add ID Purposes to layers in Cells "
+   ?callback "(TctFrmAddIDPurposesCB idform)"
+   ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> libf cells purlist fullCV)
+   ?unmapAfterCB nil))
+ (hiDisplayForm idform)))
+
+<a name="TctFrmAddIDPurposesCB"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrmAddIDPurposesCB</span> (f)
+  (TcfAddIDPurposes
+   f->libf->value
+   (parseString f->cells->value " ")
+   f->purlist->value ?fullCV f->fullCV->value))
+
+<a name="TctFrmAddIDLayers"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrmAddIDLayers</span> (obj )
+  (let (libf cells lpplist fullCV idform)
+ (setq libf (hiCreateStringField
+ ?name 'libf
+ ?prompt "Library"
+ ?defValue (geGetEditCellView)~>libName
+ ?editable t))
+ (setq cells (hiCreateStringField
+  ?name 'cells
+  ?prompt "Cells"
+  ?defValue (geGetEditCellView)~>cellName
+  ?editable t))
+ (setq lpplist (hiCreateStringField
+    ?name 'lpplist
+    ?prompt "Layer1 Purpose1; Layer2 Purpose2"
+    ?defValue (strcat "FrameConstruct " (TcfGetDefaultLPPKeepoutPurpose))
+    ?editable t))
+ (setq fullCV (hiCreateBooleanButton
+   ?name 'fullCV
+   ?buttonText "Full CellView"
+   ?defValue nil
+   ?enabled t))
+ (setq idform (hiCreateAppForm
+   ?name 'idform
+   ?formTitle "Add ID Layers to Cells"
+   ?callback "(TctFrmAddIDLayersCB idform)"
+   ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> libf cells lpplist fullCV)
+   ?unmapAfterCB nil))
+ (hiDisplayForm idform)))
+
+<a name="TctFrmAddIDLayersCB"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrmAddIDLayersCB</span> (f)
+  (TcfAddIDLayers
+   f->libf->value
+   (parseString f->cells->value " ")
+   f->lpplist->value ?fullCV f->fullCV->value))
+
+<a name="TctFrdaLock"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrdaLock</span> (obj )
+  (let (Locklibrary LockCell lockform)
+
+ (setq Locklibrary (hiCreateStringField
+  ?name 'Locklibrary
+  ?prompt "Library"
+  ?defValue (geGetEditCellView)~>libName
+  ?editable t))
+
+ (setq LockCell (hiCreateStringField
+  ?name 'LockCell
+  ?prompt "CellName"
+  ?defValue (geGetEditCellView)~>cellName
+  ?editable t))
+
+ (setq lockform (hiCreateAppForm
+  ?name 'lockform
+  ?formTitle "Locking Cells"
+  ?callback "(TctFrdaLockCB lockform)"
+  ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> Locklibrary LockCell)
+  ?unmapAfterCB nil))
+
+ (hiDisplayForm lockform)
+  )) <a name="TctFrdaLockCB"></a>
+<a name="TctFrdaLockCB"></a><span><a href="../menu4func.html#TctFrdaLockCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrdaLockCB</span> (lform)
+  (let (LoadTagfunction)
+ (setq LoadTagfunction (strcat "/nfs/pdx/disks/x74y.disk.10/work_x74y/tc1/rjohnsto/x74tc_x74y_dev/tcc_collateral/1274/pCells/SCRIBE/COMMON" "/TcfTagFunctions.il"))
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX468" title="R5RS Skill/Skill++ form">load</a> LoadTagfunction)
+ (TcfTIFLockNonPrimHier lform->Locklibrary->value  lform->LockCell->value)
+  )) <a name="TctFrdaUnlockcells"></a>
+<a name="TctFrdaUnlockcells"></a><span><a href="../menu4func.html#TctFrdaUnlockcells"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrdaUnlockcells</span> (obj )
+  (let (Unlocklibrary UnlockCell unlockform)
+
+ (setq Unlocklibrary (hiCreateStringField
+    ?name 'Unlocklibrary
+    ?prompt "Library"
+    ?defValue (geGetEditCellView)~>libName
+    ?editable t))
+
+ (setq UnlockCell (hiCreateStringField
+    ?name 'UnlockCell
+    ?prompt "CellName"
+    ?defValue (geGetEditCellView)~>cellName
+    ?editable t))
+
+ (setq unlockform (hiCreateAppForm
+    ?name 'unlockform
+    ?formTitle "UnLocking Cells"
+    ?callback "(TctFrdaUnLockcellsCB unlockform)"
+    ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> Unlocklibrary UnlockCell)
+    ?unmapAfterCB nil))
+
+ (hiDisplayForm unlockform)
+  )) <a name="TctFrdaUnLockcellsCB"></a>
+<a name="TctFrdaUnLockcellsCB"></a><span><a href="../menu4func.html#TctFrdaUnLockcellsCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrdaUnLockcellsCB</span> (unlform)
+  (let (LoadTagfunction)
+ (setq LoadTagfunction (strcat "/nfs/pdx/disks/x74y.disk.10/work_x74y/tc1/rjohnsto/x74tc_x74y_dev/tcc_collateral/1274/pCells/SCRIBE/COMMON" "/TcfTagFunctions.il"))
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX468" title="R5RS Skill/Skill++ form">load</a> LoadTagfunction)
+ (TcfUnLockNonPrimHier unlform->Unlocklibrary->value  unlform->UnlockCell->value)
+  ))<a name="TctFrdaTag"></a>
+<a name="TctFrdaTag"></a><span><a href="../menu4func.html#TctFrdaTag"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrdaTag</span> (obj )
+  (let (Taglibrary TagCell TagName tform)
+
+ (setq Taglibrary (hiCreateStringField
+    ?name 'Taglibrary
+    ?prompt "Library"
+    ?defValue (geGetEditCellView)~>libName
+    ?editable t))
+
+ (setq TagCell (hiCreateStringField
+    ?name 'TagCell
+    ?prompt "CellName"
+    ?defValue (geGetEditCellView)~>cellName
+    ?editable t))
+
+ (setq TagName (hiCreateStringField
+    ?name 'TagName
+    ?prompt "TagName"
+    ?defValue (geGetEditCellView)~>cellName
+    ?editable t))
+
+ (setq tform (hiCreateAppForm
+  ?name 'tform
+  ?formTitle "Tagging Cells"
+  ?callback "(TctFrdaTagCB tform)"
+  ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> Taglibrary TagCell TagName)
+  ?unmapAfterCB nil))
+
+ (hiDisplayForm tform)
+  )) <a name="TctFrdaTagCB"></a>
+<a name="TctFrdaTagCB"></a><span><a href="../menu4func.html#TctFrdaTagCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrdaTagCB</span> (tform)
+  (let (LoadTagfunction)
+ (setq LoadTagfunction (strcat "/nfs/pdx/disks/x74y.disk.10/work_x74y/tc1/rjohnsto/x74tc_x74y_dev/tcc_collateral/1274/pCells/SCRIBE/COMMON" "/TcfTagFunctions.il"))
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX468" title="R5RS Skill/Skill++ form">load</a> LoadTagfunction)
+ (TcfTapeinAddTag tform->Taglibrary->value  tform->TagCell->value tform->TagName->value)
+  )) <a name="TctFrdaPop"></a>
+<a name="TctFrdaPop"></a><span><a href="../menu4func.html#TctFrdaPop"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrdaPop</span> (obj )
+  (let (PopTag pform)
+
+ (setq PopTag (hiCreateStringField
+   ?name 'PopTag
+   ?prompt "CreatePopTag"
+
+   ?editable t))
+
+ (setq pform (hiCreateAppForm
+  ?name 'pform
+  ?formTitle "Creating Pop Tag"
+  ?callback "(TctFrdaPopCB pform)"
+  ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> PopTag)
+  ?unmapAfterCB nil))
+
+ (hiDisplayForm pform)
+  )) <a name="TctFrdaPopCB"></a>
+<a name="TctFrdaPopCB"></a><span><a href="../menu4func.html#TctFrdaPopCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrdaPopCB</span> (pform)
+  (let (Popcommand popid)
+ (setq Popcommand "~tcda/bin/createpoptag")
+ popid=(ipcBeginProcess (strcat Popcommand " " pform->PopTag->value))
+
+ (ipcWaitForProcess popid)
+ (ipcReadProcess popid)
+ (TccInfo "TctFrdaPopCB" (sprintf nil "creating pop tag"))
+
+ popid
+
+  )) <a name="TctFrdaStreamout"></a>
+<a name="TctFrdaStreamout"></a><span><a href="../menu4func.html#TctFrdaStreamout"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrdaStreamout</span> (obj )
+  (let (SLibrary SCell STag sform)
+
+ (setq SLibrary (hiCreateStringField
+  ?name 'SLibrary
+  ?prompt "Library"
+  ?defValue (geGetEditCellView)~>libName
+  ?editable t))
+
+ (setq SCell (hiCreateStringField
+  ?name 'SCell
+  ?prompt "CellName"
+  ?defValue (geGetEditCellView)~>cellName
+  ?editable t))
+
+ (setq STag (hiCreateStringField
+ ?name 'STag
+ ?prompt "TagName"
+ ?defValue (geGetEditCellView)~>cellName
+ ?editable t))
+
+ (setq sform (hiCreateAppForm
+  ?name 'sform
+  ?formTitle "Creating Stream file for Xor"
+  ?callback "(TctFrdaStreamoutCB sform)"
+  ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> SLibrary SCell STag)
+  ?unmapAfterCB nil))
+
+ (hiDisplayForm sform)
+  )) <a name="TctFrdaStreamoutCB"></a>
+<a name="TctFrdaStreamoutCB"></a><span><a href="../menu4func.html#TctFrdaStreamoutCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrdaStreamoutCB</span> (sform)
+  (let (Streamoutfunction sid)
+ (setq Streamoutfunction "/nfs/pdx/disks/x74y.disk.10/work_x74y/tc1/rjohnsto/x74tc_x74y_dev/streamouttag.csh")
+ sid=(ipcBeginProcess (strcat Streamoutfunction " " sform->SLibrary->value " " sform->SCell->value " " sform->STag->value))
+ (ipcWaitForProcess sid)
+ (ipcReadProcess sid)
+ (TccInfo "TctFrdaStreamoutCB" (sprintf nil "Creating Stream file for XOR. The generated stream file can be found at--/nfs/pdx/disks/x74a.disk.12/work_x74a/tc2/frda/x74tc_x74aframe/rundir/opus"))
+ sid
+
+  )) <a name="TctReportTaggedDiffsGUI"></a>
+<a name="TctReportTaggedDiffsGUI"></a><span><a href="../menu4func.html#TctReportTaggedDiffsGUI"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctReportTaggedDiffsGUI</span> (obj )
+  (let (RTDLibrary RTDCell RTDTag RTDbaseTag rtdform)
+
+ (setq RTDLibrary (hiCreateStringField
+    ?name 'RTDLibrary
+    ?prompt "Library"
+    ?defValue (geGetEditCellView)~>libName
+    ?editable t))
+
+ (setq RTDCell (hiCreateStringField
+    ?name 'RTDCell
+    ?defValue (geGetEditCellView)~>cellName
+    ?prompt "CellName"
+    ?editable t))
+
+ (setq RTDTag (hiCreateStringField
+   ?name 'RTDTag
+   ?prompt "TapeIn TagName"
+   ?defValue (geGetEditCellView)~>cellName
+   ?editable t))
+
+ (setq RTDbaseTag (hiCreateStringField
+    ?name 'RTDbaseTag
+    ?prompt "Base TagName"
+    ?editable t))
+
+ (setq rtdform (hiCreateAppForm
+    ?name 'rtdform
+    ?formTitle "Report Tagged Differences"
+    ?callback "(TctReportTaggedDiffsCB rtdform)"
+    ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> RTDLibrary RTDCell RTDTag RTDbaseTag)
+    ?unmapAfterCB nil))
+
+ (hiDisplayForm rtdform)
+  )) <a name="TctReportTaggedDiffsCB"></a>
+<a name="TctReportTaggedDiffsCB"></a><span><a href="../menu4func.html#TctReportTaggedDiffsCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctReportTaggedDiffsCB</span> (rtdform)
+  (let  (LoadTagfunction)
+ (setq LoadTagfunction (strcat "/nfs/pdx/disks/x74y.disk.10/work_x74y/tc1/rjohnsto/x74tc_x74y_dev/tcc_collateral/1274/pCells/SCRIBE/COMMON" "/TcfTagFunctions.il"))
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX468" title="R5RS Skill/Skill++ form">load</a> LoadTagfunction)
+ (TcfReportTaggedDiffs rtdform->RTDLibrary->value rtdform->RTDCell->value rtdform->RTDTag->value rtdform->RTDbaseTag->value ?mailuser (getShellEnvVar "USER"))
+
+  )) <a name="TctReportTaggedCellsGUI"></a>
+<a name="TctReportTaggedCellsGUI"></a><span><a href="../menu4func.html#TctReportTaggedCellsGUI"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctReportTaggedCellsGUI</span> (obj )
+  (let (RTCLibrary RTCCell RTCTag rtcform)
+
+ (setq RTCLibrary (hiCreateStringField
+    ?name 'RTCLibrary
+    ?prompt "Library"
+    ?defValue (geGetEditCellView)~>libName
+    ?editable t))
+
+ (setq RTCCell (hiCreateStringField
+    ?name 'RTCCell
+    ?prompt "CellName"
+    ?defValue (geGetEditCellView)~>cellName
+    ?editable t))
+
+ (setq RTCTag (hiCreateStringField
+   ?name 'RTCTag
+   ?prompt "TapeIn TagName"
+   ?defValue (geGetEditCellView)~>cellName
+   ?editable t))
+
+ (setq rtcform (hiCreateAppForm
+    ?name 'rtcform
+    ?formTitle "Report Tagged Cells"
+    ?callback "(TctReportTaggedCellsCB rtcform)"
+    ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> RTCLibrary RTCCell RTCTag )
+    ?unmapAfterCB nil))
+
+ (hiDisplayForm rtcform)
+  )) <a name="TctReportTaggedCellsCB"></a>
+<a name="TctReportTaggedCellsCB"></a><span><a href="../menu4func.html#TctReportTaggedCellsCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctReportTaggedCellsCB</span> (rtcform)
+  (let  (LoadTagfunction)
+ (setq LoadTagfunction (strcat "/nfs/pdx/disks/x74y.disk.10/work_x74y/tc1/rjohnsto/x74tc_x74y_dev/tcc_collateral/1274/pCells/SCRIBE/COMMON" "/TcfTagFunctions.il"))
+ (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX468" title="R5RS Skill/Skill++ form">load</a> LoadTagfunction)
+ (TcfReportTaggedCells rtcform->RTCLibrary->value rtcform->RTCCell->value rtcform->RTCTag->value ?mailuser (getShellEnvVar "USER"))
+
+  )) <a name="TctFrmRunTIChecks"></a>
+<a name="TctFrmRunTIChecks"></a><span><a href="../menu4func.html#TctFrmRunTIChecks"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrmRunTIChecks</span> (obj )
+(let (chklibrary chkCell chkform)
+
+ (setq chklibrary (hiCreateStringField
+  ?name 'chklibrary
+  ?prompt "Library"
+  ?defValue (geGetEditCellView)~>libName
+  ?editable t))
+
+ (setq chkCell (hiCreateStringField
+  ?name 'chkCell
+  ?prompt "Cell"
+  ?defValue (geGetEditCellView)~>cellName
+  ?editable t))
+
+ (setq chkform (hiCreateAppForm
+  ?name 'chkform
+  ?formTitle "Run Tape in Checks on Cells"
+  ?callback "(TctFrmRunTICheckCB chkform)"
+  ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> chklibrary chkCell)
+  ?unmapAfterCB nil))
+
+ (hiDisplayForm chkform)
+  ))<a name="TctFrmRunTICheckCB"></a>
+<a name="TctFrmRunTICheckCB"></a><span><a href="../menu4func.html#TctFrmRunTICheckCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctFrmRunTICheckCB</span> (chkform)
+(TcfgetTapeinCellList chkform->chklibrary->value (parseString chkform->chkCell->value ))
+  )</pre></font><div>&nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p></div></body></html>

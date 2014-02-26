@@ -1,0 +1,84 @@
+#!/usr/intel/bin/bash
+# By Abelardo Jara-Berrocal, 
+# Copied and modified from the LAML installation process - DO NOT EDIT.
+# Usage: skilldoc file
+#
+DOCTOOLDIRECTORY=/p/advda/elisp/utils/doctool
+CURRENTDIRECTORY="`pwd`"
+filename=$(basename "${1}")
+extension="${filename##*.}"
+filename="${filename%.*}"
+lamlbinary="/p/advda/elisp/utils/doctool/schemedoc/bin/laml"
+
+# Check if the input argument exists
+if [ ! -f "$1" ]
+  then
+    echo "Please specify an input file."
+    echo "Usage: skilldoc <inputfile> <output directory>"
+    echo
+    exit
+  else
+    echo "Generating documentation for ${1} in directory ${2}"
+    echo
+fi
+
+# Check if the output directory exists
+if [ ! -d "$2" ]
+  then
+    echo "Please specify a valid output directory"
+    echo "Usage: skilldoc <inputfile> <output directory>"
+    exit
+  else
+    DIRECTORY="${2}"
+    echo "Generating documentation for ${1} in directory ${2}"
+    echo
+fi
+
+# Check if the doctooloutput directory exists in your /home directory, if doesnt exist create it
+if [[ ! -d "${DIRECTORY}" && ! -L "${DIRECTORY}" ]] ; then
+    mkdir $DIRECTORY
+    cd $DIRECTORY
+fi
+
+cd $DIRECTORY
+# rm -rf ${filename}
+# mkdir ${filename}
+
+# DIRECTORY=~/doctooloutput/${filename}
+# DIRECTORY=~/doctooloutput
+cd ${CURRENTDIRECTORY}
+
+# Copy the ex.scm from sample script to your /home/doctooloutput directory and rename it as your input file
+cp $DOCTOOLDIRECTORY/doctoolsamplescripts/ex.scm "${DIRECTORY}/${filename}_tmp.scm"
+
+# Create the exin.scm from your input file in your /home/doctooloutput directory and rename it as your input file
+sed -e "s/defun/define/ig" -e "s/defclass/define/ig" -e "s/defmethod/define/ig" -e "s/defgeneric/define/ig" -e "s/;; parameters/parameters/ig" -e "s/pcDefinePCell/define pcDefinePCell (parameters) /ig" -e "s/@initform//ig" -e "s/@initarg//ig" -e "s/;; class start/let* ((obj obj) ;; class start/ig" -e "s/;; class end/) ;; class end/ig" -e "s/^(inSkill//ig" -e "s/) ;; inSkill//ig" -e "s/()/( obj )/ig" -e "s/(let/(letskill/ig" -e "s/_Tcc/Tcc/ig" -e "s/^(unless (fboundp '/;; (definition of  /ig" -e "s/^  ) ;; unless/;; end of function/ig" ${1} > ${DIRECTORY}/${filename}.scm
+
+# Replace the name of your output HTML file to match the name of your source code file on the exin.scm in your /home/doctooloutput directory
+sed -e "s/exin.scm/${filename}.scm/ig" -e "s/TctFrameFlows/${filename}/ig" ${DIRECTORY}/${filename}_tmp.scm > ${DIRECTORY}/${filename}_script.scm
+rm ${DIRECTORY}/${filename}_tmp.scm
+
+# Replace/redirect the output directory in the exin.scm file in your /home/doctooloutput directory
+cd $DIRECTORY
+
+# Run the laml tool on the ex.scm file on your /home/doctooloutput directory
+$lamlbinary ${filename}_script.scm
+find ./ -name "*.html" | xargs sed -i 's#font size="2"#font family="Monospace"#g'
+find ./ -name "*.html" | xargs sed -i 's#)[ \t][ \t]*#) #g'
+find ./ -name "*.html" | xargs sed -i 's#)[ \t]*)#))#g'
+find ./ -name "*.html" | xargs sed -i 's#^[ \t]*)#  )#g'
+find ./ -name "*.html" | xargs sed -i 's#    # #g'
+find ./ -name "*.html" | xargs sed -i 's#)[ \t]*)#))#g'
+find ./ -name "*.htm*" | xargs sed -i 's#letskill#let#g'
+find ./ -name "*.htm*" | xargs sed -i 's#define#defun#g'
+find ./ -name "*.htm*" | xargs sed -i 's#Scheme#Skill/Skill\+\+#g'
+
+# Remove all the .scm files in your doctooloutput directory (cleaning up things)
+# rm *.manlsp
+rm ${filename}_script.scm
+rm ${filename}.scm
+
+# Finish and return to original directory
+cd ${CURRENTDIRECTORY}
+exit
+

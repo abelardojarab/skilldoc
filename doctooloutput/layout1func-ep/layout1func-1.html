@@ -1,0 +1,1345 @@
+<html><head><link href="stylesheets/program.css" rel="stylesheet" title="program" type="text/css" /> <title>Source file</title></head><body bgcolor="#ffffff" text="#000000" link="#000000" vlink="#000000"><font family="Monospace"><pre><div class="schemedoc-section-comment">;;; StartLayout functions
+;;; .section-id startlayout-load
+;;; - This section contains the StartLayout related functions</div>
+<a name="TcfBuildFunctionDPL"></a>
+<a name="TcfBuildFunctionDPL"></a><span><a href="../layout1func.html#TcfBuildFunctionDPL"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBuildFunctionDPL</span> (funList funName line)
+  "Builds a DPL that can be provided as argument to a function"
+  (let (argLst argDPL varName varType elements)
+ (setq argDPL (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil))
+ (setq argLst (get funList (nth 0 line)))
+ (fors i 0 (sub1 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> argLst)) (setq elements (parseString (nth i argLst) "."))
+    (setq varName (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> elements))
+    (setq varType (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> elements))
+    (putprop argDPL (tcfatot (nth (add1 i) line) varType) varName)
+  ) argDPL
+  )) 
+<a name="TcfBuildFunctionTable"></a>
+<a name="TcfBuildFunctionTable"></a><span><a href="../layout1func.html#TcfBuildFunctionTable"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBuildFunctionTable</span> (filelist)
+  "Builds a DPL where the entries are the function names and the values are a list of the arguments that such function uses."
+  (let (funList index funElem)
+
+  (setq index 0)
+ (setq funList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil))
+ (while (equal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX391" title="R5RS Skill/Skill++ form">substring</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (nth index filelist)) 1 6) "Sample")
+   (setq funElem (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX322" title="R5RS Skill/Skill++ form">cdr</a> (nth index filelist))) (putprop funList funElem (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX391" title="R5RS Skill/Skill++ form">substring</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (nth index filelist)) 7 (sub1 (strlen (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (nth index filelist))))))
+   (setq index (add1 index)) ) 
+ funList
+  )) 
+<a name="TcfStartLayoutFrameCell"></a>
+<a name="TcfStartLayoutFrameCell"></a><span><a href="../layout1func.html#TcfStartLayoutFrameCell"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfStartLayoutFrameCell</span> (csvfile @key (sheet ""))
+  "Main function that starts the layout generation"
+  (let (csvfileID filelist lineinfile line (EntryFunction "") funList listofDPLs command (paramDpl (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil)) layoutFunction (instRegen t) (IDNumber 0) localLstOfDPLs (numInstances 1) lstOfCells assemblyDPL cvChild lineDPL cvId spcCmdLst comPat1 fileExtension (k 1))
+
+  (setq fileExtension (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> (parseString csvfile "."))))
+ (when (equal (lowerCase fileExtension) "xlsx")
+   (setq csvfile
+   (TcfPythonRunSyncScript "xlsx2csv.py"
+         ?arguments (strcat " -f " csvfile
+                (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (nequal sheet "")
+                 (strcat " -s " sheet)
+               "" ))
+         ?loadResult t))
+   (TccInfo "TcfStartLayoutFrameCell" (sprintf nil "Detected Excel file extension, csvfile=%L" csvfile))
+  ) 
+  (setq comPat1 (pcreCompile "^StartLayout[a-zA-Z0-9]*"))
+
+  (setq spcCmdLst (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil)) (setq csvfileID (infile csvfile))
+ (unless csvfileID
+   (TccWarn "TcfStartLayoutFrameCell" "Input CSV/Excel file does not exist.")
+   (error "Input CSV/Excel file does not exist.")
+  ) 
+ (when csvfileID
+   (while (gets lineinfile csvfileID)
+  (setq filelist (append1 filelist (parseString lineinfile ",
+")) )
+  )) 
+  (setq funList (<a class="applied-name" href="layout1func-1.html#TcfBuildFunctionTable" title="layout1func">TcfBuildFunctionTable</a> filelist))
+ (TccInfo "TcfStartLayoutFrameCell" (sprintf nil "Our current function table is: %L" funList))
+
+  (foreachs line filelist
+     (rexCompile "^StartLayout[a-zA-Z0-9]*")
+       (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (get funList (nth 0 line)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> (pcreExecute comPat1 (nth 0 line))) (nequal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX391" title="R5RS Skill/Skill++ form">substring</a> (nth 0 line) 1 6) "Sample")) (setq lineDPL (<a class="applied-name" href="layout1func-1.html#TcfBuildFunctionDPL" title="layout1func">TcfBuildFunctionDPL</a> funList (nth 0 line) line)) 
+        (unless lineDPL->Draw
+      lineDPL->Draw <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> "Y"
+  ) 
+    (unless lineDPL->LstIDNumber
+      lineDPL->LstIDNumber <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> IDNumber)
+  ) 
+        (setq listofDPLs (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX334" title="R5RS Skill/Skill++ form">append</a> listofDPLs (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+                 (nth 0 line) lineDPL               lineDPL->LstIDNumber               lineDPL->Draw               k               ))))
+  ) 
+       (when (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (nth 0 line) spcCmdLst) (setq assemblyDPL (<a class="applied-name" href="layout1func-1.html#TcfBuildFunctionDPL" title="layout1func">TcfBuildFunctionDPL</a> funList (nth 0 line) line))
+  ) 
+       (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (pcreExecute comPat1 (nth 0 line)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (nth 0 line) spcCmdLst)))
+    (setq EntryFunction (nth 0 line))
+    (setq IDNumber (add1 IDNumber))
+  ) 
+     (setq k (add1 k))
+  ) 
+  (setq numInstances IDNumber)
+
+  (setq IDNumber 1)
+ (fors index 0 (sub1 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> filelist))
+    (setq EntryFunction (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (nth index filelist)))
+    
+    (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (pcreExecute comPat1 EntryFunction) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> EntryFunction spcCmdLst))) 
+      (setq paramDpl (<a class="applied-name" href="layout1func-1.html#TcfBuildFunctionDPL" title="layout1func">TcfBuildFunctionDPL</a> funList command (nth index filelist)))
+   (putprop paramDpl EntryFunction 'EntryFunction)
+   (putprop paramDpl numInstances 'numInstances)
+
+      (unless (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> 'OpenCellViewMode paramDpl)
+     (putprop paramDpl "write" 'OpenCellViewMode))
+   (unless paramDpl->IDNumber
+     (putprop paramDpl IDNumber 'IDNumber))
+
+      (setq lstOfCells (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> paramDpl lstOfCells))
+
+      (setq localLstOfDPLs (setofs x listofDPLs
+           (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a>
+            (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> paramDpl->IDNumber (nth 2 x))
+            (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (nth 3 x) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> t "Y" "y" "yes" "true" "True" "TRUE"))
+  )))
+
+      (putd 'paramDpl paramDpl)
+   (putd 'localLstOfDPLs localLstOfDPLs)
+   (TccInfo "TcfStartLayoutFrameCell " (sprintf nil "~~~~~~&gt; For batch of instructions #%d, invoking %s for layout generation." IDNumber (strcat "(Tcf" EntryFunction " paramDpl localLstOfDPLs)")))
+
+      (<a class="applied-name" href="layout1func-1.html#TcfStartLayoutGenericFrameCell" title="layout1func">TcfStartLayoutGenericFrameCell</a> paramDpl localLstOfDPLs)
+
+   (setq IDNumber (add1 IDNumber))
+   (gc) (inSkill (gc)) )) 
+ t
+  )) 
+<a name="TcfStartLayoutGenericFrameCell"></a><a name="TcfStartLayoutGenericFrameCell"></a><span><a href="../layout1func.html#TcfStartLayoutGenericFrameCell"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfStartLayoutGenericFrameCell</span> (globalDPL lstOfDPLs)
+  (let (cvId paramDpl line funList funDpl funName paramDPL (command "") lstParams redirectPort (errorCount 0))
+
+  (setq redirectPort (outfile (strcat "/tmp/" (getShellEnvVar "USER") "_" (buildString (parseString buildString(parseString(getCurrentTime(obj ) ":") "_")) "_") "_TcfStartLayoutGenericFrameCell.log")))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (stringp (TccLib globalDPL->Library))
+  (putpropq globalDPL (TccLib globalDPL->Library) Library)
+  ) 
+  (setq cvId (dbOpenCellViewByType globalDPL->Library globalDPL->CellName "layout" "maskLayout" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal (lowerCase globalDPL->OpenCellViewMode) "write") "w" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal (lowerCase globalDPL->OpenCellViewMode) "append") "a" "r"))))
+
+  (unless (dbIsId cvId)
+   (TccWarn "TcfStartLayoutGenericFrameCell" "Unable to open the layout cellView. Please check if the library and cellname are correct.")
+   (error "Unable to open the layout cellView.")
+  ) 
+ (when (equal (lowerCase globalDPL->OpenCellViewMode) "read")
+   (dbSave cvId)
+   (dbReopen cvId "r")
+  ) 
+  (TccInfo "TcfStartLayoutGenericFrameCell" (sprintf nil "Starting generic frame cell generation with cellView on %L mode." cvId~>mode))
+
+  (setq funName (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX391" title="R5RS Skill/Skill++ form">substring</a> globalDPL->EntryFunction 12 (strlen globalDPL->EntryFunction)))
+
+  (setq paramDpl globalDPL)
+ (putd 'globalDPL globalDPL)
+ (putd 'paramDpl paramDpl)
+ (putd 'cvId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> cvId))
+
+  (evalstring (strcat "(inSkill (TcfSCRIBEInitModule" funName " (car (getd &#39;cvId)) (getd &#39;globalDPL)))"))
+
+  (foreachs line lstOfDPLs
+     (setq funDpl (nth 1 line))
+     (TccInfo "TcfStartLayoutGenericFrameCell" (sprintf nil "Processing command %L @line %d, with paramDpl=%L" (nth 0 line) (nth 4 line) paramDpl))
+
+     (when (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (nth 3 line) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> t "Y" "yes" "y")) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX110" title="R5RS Skill/Skill++ form">cond</a>  
+     ((equal (nth 0 line) "AddID") (let (errport redirectPort)
+     (errset (TcfAddIDLayer cvId (TcfGetLPP funDpl->layer)
+             ?sx funDpl->sx
+             ?sy funDpl->sy
+  ) nil)
+     (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> errset.errset (nequal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> errset.errset) "car")) (TccWarn "TcfStartLayoutGenericFrameCell" (sprintf nil "Detected error when processing %L @line %d caused by: %L" (nth 0 line) (nth 4 line) errset.errset))
+       (setq errorCount (add1 errorCount))
+  )) ) 
+          ((fboundp (concat "TcfSCRIBE" (nth 0 line) "Module" funName))
+      (putprop paramDpl funDpl 'funParams)
+      (putd 'paramDpl paramDpl)
+      (let (errport redirectPort)
+     (errset (evalstring (strcat "(inSkill (TcfSCRIBE" (nth 0 line) "Module" funName " (car (getd &#39;cvId)) (getd &#39;paramDpl)))")) nil)
+     (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> errset.errset (nequal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> errset.errset) "car")) (TccWarn "TcfStartLayoutGenericFrameCell" (sprintf nil "Detected error when processing %L due to: %L" (nth 0 line) errset.errset))
+       (setq errorCount (add1 errorCount))
+  )) ) 
+          ((getq (TcfGetSkillFunctionInfo (nth 0 line)) parameters) (TccInfo "TcfStartLayoutGenericFrameCell" (sprintf nil "Invoking global function %L ***" (nth 0 line)))
+      (setq lstParams (getq (TcfGetSkillFunctionInfo (nth 0 line)) parameters))
+      (setq command (TcfStartLayoutBuildCustomCommand (nth 0 line) funDpl lstParams))
+      (let (errport redirectPort)
+     (errset (evalstring command) nil) (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> errset.errset (nequal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> errset.errset) "car")) (TccWarn "TcfStartLayoutGenericFrameCell" (sprintf nil "--&gt; Detected error when processing %L due to: %L
+" (nth 0 line) errset.errset))
+       (setq errorCount (add1 errorCount))
+  )) ) 
+          ((getq (TcfGetSkillFunctionInfo (strcat "Tcf" (nth 0 line))) parameters) (TccInfo "TcfStartLayoutGenericFrameCell" (sprintf nil "Invoking global function %L ***" (strcat "Tcf" (nth 0 line))))
+      (setq lstParams (getq (TcfGetSkillFunctionInfo (strcat "Tcf" (nth 0 line))) parameters))
+      (setq command (TcfStartLayoutBuildCustomCommand (strcat "Tcf" (nth 0 line)) funDpl lstParams))
+      (let (errport redirectPort)
+     (errset (evalstring command) nil) (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> errset.errset (nequal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> errset.errset) "car")) (TccWarn "TcfStartLayoutGenericFrameCell" (sprintf nil "--&gt; Detected error when processing %L due to: %L
+" (strcat "Tcf" (nth 0 line)) errset.errset))
+       (setq errorCount (add1 errorCount))
+  )) ) 
+     (t       (TccWarn "TcfStartLayoutGenericFrameCell" (sprintf nil "Please defun the %s function for %s" (nth 0 line) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (parseString funName "Cell"))))
+  )) 
+  )) 
+ (unless (equal cvId~>mode "r")
+   (mapcar 'dbDeleteObject (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (dbGetTrueOverlaps cvId cvId~>bBox (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "background" "drawing") 0))))
+   lstDebugLayers <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (setofs x cvId~>lpps (equal x~>purpose (TcfGetDefaultLPPDebugPurpose ?cvId cvId)))~>layerName
+   (foreachs elem lstDebugLayers
+    (mapcar 'dbDeleteObject (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (dbGetTrueOverlaps cvId cvId~>bBox (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> elem (TcfGetDefaultLPPDebugPurpose ?cvId cvId)) 0))))
+  ) (dbSave cvId)
+  ) 
+ (dbClose cvId)
+ (close redirectPort)
+
+ (TccInfo "TcfStartLayoutGenericFrameCell" (sprintf nil "*** Generic frame cell generation has ended. ***"))
+
+ (when (greaterp errorCount 0)
+   (TccWarn "TcfStartLayoutGenericFrameCell" (sprintf nil "%L errors were detected during spreadsheet execution for section %L."  errorCount funName))
+   (TccWarn "TcfStartLayoutGenericFrameCell" (sprintf nil "Please review log file at %L" redirectPort))
+  ) t
+  )) 
+<div class="schemedoc-section-comment">;;; Floorplanning functions
+;;; .section-id floorplanning-load
+;;; - This section contains the floorplanning related functions</div>
+<a name="TcfClusterInstance"></a>
+<a name="TcfClusterInstance"></a><span><a href="../layout1func.html#TcfClusterInstance"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfClusterInstance</span> (obj )
+  (let* ((obj obj) 
+   (InstanceName  InstanceName)
+   (cvId  nil) 
+   (RefName  RefName)
+   (RefOffsetX  RefOffsetX)
+   (RefOffsetY  RefOffsetY)
+   (RefAlignHandle  RefAlignHandle)
+   (RefRefHandle  RefRefHandle)
+   (isRefPlaced  isRefPlaced) (isPlaced  isPlaced) (AlignTo  "Base")
+   (isTreeModeAlign  nil)
+
+   (RefRotation  "R0")
+
+   (lstRODs  nil)
+   (baseROD  nil)
+   (clusterROD  nil)
+
+   (Cluster  Cluster)
+
+   (isDebugMode  nil)
+
+  ))) 
+<a name="TcfClusterInstanceSetPlaced"></a><a name="TcfClusterInstanceSetPlaced"></a><span><a href="../layout1func.html#TcfClusterInstanceSetPlaced"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfClusterInstanceSetPlaced</span> ( (obj <a class="applied-name" href="layout1func-1.html#TcfClusterInstance" title="layout1func">TcfClusterInstance</a>))
+  obj->isPlaced <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> t
+  ) 
+<a name="TcfClusterInstanceSetDebugMode"></a><a name="TcfClusterInstanceSetDebugMode"></a><span><a href="../layout1func.html#TcfClusterInstanceSetDebugMode"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfClusterInstanceSetDebugMode</span> ( (obj <a class="applied-name" href="layout1func-1.html#TcfClusterInstance" title="layout1func">TcfClusterInstance</a>))
+  obj->isDebugMode <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> t
+  ) 
+<a name="TcfClusterInstanceSetCvId"></a><a name="TcfClusterInstanceSetCvId"></a><span><a href="../layout1func.html#TcfClusterInstanceSetCvId"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfClusterInstanceSetCvId</span> ( (obj <a class="applied-name" href="layout1func-1.html#TcfClusterInstance" title="layout1func">TcfClusterInstance</a>) cvId )
+  obj->cvId <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> cvId
+  ) 
+<a name="TcfClusterInstanceSetName"></a><a name="TcfClusterInstanceSetName"></a><span><a href="../layout1func.html#TcfClusterInstanceSetName"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfClusterInstanceSetName</span> ( (obj <a class="applied-name" href="layout1func-1.html#TcfClusterInstance" title="layout1func">TcfClusterInstance</a>) InstanceName )
+  obj->InstanceName <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> InstanceName
+  ) 
+<a name="TcfClusterInstanceSetAlignToPrev"></a><a name="TcfClusterInstanceSetAlignToPrev"></a><span><a href="../layout1func.html#TcfClusterInstanceSetAlignToPrev"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfClusterInstanceSetAlignToPrev</span> ( (obj <a class="applied-name" href="layout1func-1.html#TcfClusterInstance" title="layout1func">TcfClusterInstance</a>) AlignTo )
+  obj->AlignTo <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> AlignTo
+  ) 
+<a name="TcfFloorplanCluster"></a>
+<a name="TcfFloorplanCluster"></a><span><a href="../layout1func.html#TcfFloorplanCluster"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFloorplanCluster</span> (obj )
+  (let* ((obj obj) 
+   (ClusterName  ClusterName)
+   (ClusterLibrary  (TccLib "scratch")) (isSeparateCv  isSeparateCv) 
+   (ClusterCellSizeX  1.0)
+   (ClusterCellSizeY  1.0)
+
+   (isRoot  isRoot) (isLeaf  isLeaf) 
+   (isBaseACell  isBaseACell) (isBaseACluster  nil) (BaseName  nil)
+   (BaseLibrary  "")
+   (BaseOffsetX  0.0)
+   (BaseOffsetY  0.0)
+   (BaseRotation  "R0")
+   (BaseMosaicX  1)
+   (BaseMosaicY  1)
+
+   (BaseCluster  nil)
+
+   (LstOfClusterInstances  nil)
+   (NumClusters  0)
+   (rotatedModes  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "R90" "R270" "MYR90" "MXR90"))
+
+  ))) 
+<a name="TcfFloorplanClusterGetName"></a>
+<a name="TcfFloorplanClusterGetName"></a><span><a href="../layout1func.html#TcfFloorplanClusterGetName"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFloorplanClusterGetName</span> ( (obj <a class="applied-name" href="layout1func-1.html#TcfFloorplanCluster" title="layout1func">TcfFloorplanCluster</a>))
+  "getter method for the cluster Name"
+  obj->ClusterName
+  ) 
+<a name="TcfFloorplanClusterSetSize"></a>
+<a name="TcfFloorplanClusterSetSize"></a><span><a href="../layout1func.html#TcfFloorplanClusterSetSize"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFloorplanClusterSetSize</span> ( (obj <a class="applied-name" href="layout1func-1.html#TcfFloorplanCluster" title="layout1func">TcfFloorplanCluster</a>) lstSize )
+  "setter method for the cvId"
+  obj->ClusterCellSizeX <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> lstSize)
+  obj->ClusterCellSizeY <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> lstSize)
+  t
+  ) 
+<a name="TcfFloorplanClusterSetRoot"></a>
+<a name="TcfFloorplanClusterSetRoot"></a><span><a href="../layout1func.html#TcfFloorplanClusterSetRoot"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFloorplanClusterSetRoot</span> ( (obj <a class="applied-name" href="layout1func-1.html#TcfFloorplanCluster" title="layout1func">TcfFloorplanCluster</a>) root)
+  "setter method for the isRoot flag"
+  obj->isRoot <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> root
+  ) <a name="TcfFloorplanClusterSetBase"></a>
+<a name="TcfFloorplanClusterSetBase"></a><span><a href="../layout1func.html#TcfFloorplanClusterSetBase"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFloorplanClusterSetBase</span> ( (obj <a class="applied-name" href="layout1func-1.html#TcfFloorplanCluster" title="layout1func">TcfFloorplanCluster</a>) BaseName BaseLibrary isBaseACell BaseOffsetX BaseOffsetY BaseRotation)
+  "setter method for the base object"
+  (let (obj )
+ obj->BaseName <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> BaseName
+ obj->BaseLibrary <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> BaseLibrary
+ obj->isBaseACell <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> isBaseACell
+ obj->BaseOffsetX <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> BaseOffsetX
+ obj->BaseOffsetY <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> BaseOffsetY
+ obj->BaseRotation <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> BaseRotation
+ t
+  )) <a name="TcfFloorplanClusterPlaceBase"></a>
+<a name="TcfFloorplanClusterPlaceBase"></a><span><a href="../layout1func.html#TcfFloorplanClusterPlaceBase"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFloorplanClusterPlaceBase</span> (obj obj2 )
+  (let (obj )
+ (TccInfo "TcfFloorplanClusterPlaceBase" (sprintf nil "This function is a class reponsability."))
+  )) 
+<a name="TcfFloorplanClusterPlaceBase"></a><a name="TcfFloorplanClusterPlaceBase"></a><span><a href="../layout1func.html#TcfFloorplanClusterPlaceBase"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFloorplanClusterPlaceBase</span> ( (obj <a class="applied-name" href="layout1func-1.html#TcfFloorplanCluster" title="layout1func">TcfFloorplanCluster</a>) (obj2 <a class="applied-name" href="layout1func-1.html#TcfClusterInstance" title="layout1func">TcfClusterInstance</a>))
+  "Places the base instance that will be used as reference in the cluster."
+  (let (auxMosaicCellCv maxX maxY CreateBaseRod baseid baseBBox offsetXB offsetYB lstOffsetB cvId iteration xpnt ypnt (outDPL (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil)))
+
+  (TccInfo "TcfFloorplanClusterPlaceBase" (sprintf nil "Placing cluster %L with base %L under instance %L" obj~>ClusterName obj->BaseName obj2->InstanceName))
+ (setq iteration obj->NumClusters)
+
+ (setq cvId obj2->cvId)
+ (dbRefreshCellView cvId) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj->isBaseACell
+    (progn
+
+    (TccInfo "TcfFloorplanClusterPlaceBase" (sprintf nil "Placing base %L for instance %L" obj~>BaseName obj2->InstanceName))
+
+     (setq baseid (dbOpenCellViewByType obj->BaseLibrary obj->BaseName "layout" "maskLayout" "r"))
+    (unless baseid
+   (TccWarn "TcfFloorplanClusterPlaceBase" (sprintf nil "The base cell does not exist - Library: %L, Cell: %L" obj->BaseLibrary obj->BaseName))
+   (error "TcfFloorplanClusterPlace - Cell does not exist.
+")
+  )
+    (setq baseBBox (TcfGetBoundingBox baseid))
+
+    (setq lstOffsetB (TcfGetOffsetsBBox2BBox obj->BaseRotation baseid baseBBox))
+    (setq offsetXB (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> lstOffsetB))
+    (setq offsetYB (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> lstOffsetB))
+
+    (setq maxX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (trBBoxDims baseBBox)))
+    (setq maxY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (trBBoxDims baseBBox)))
+
+     (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> obj->BaseMosaicX obj->BaseMosaicY (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX118" title="R5RS Skill/Skill++ form">or</a> (nequal obj->BaseMosaicX 1) (nequal obj->BaseMosaicY 1))))
+     (progn
+    (dbCreateInst cvId baseid (symbolToString (concat obj2->InstanceName "_" obj->ClusterName "_" obj->BaseName "_" iteration))
+         (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+          0.0
+          0.0
+  ) obj->BaseRotation 1)
+
+  ) 
+   (progn
+     (setq auxMosaicCellCv (dbOpenCellViewByType (TccLib "scribe") "auxMosaicCell"  "layout" "maskLayout" "r"))
+     (dbCreateParamInst cvId auxMosaicCellCv
+         (symbolToString (concat obj2->InstanceName "_" obj->ClusterName "_" obj->BaseName "_" iteration))
+         0:0
+         "R0"
+         1
+         (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+          (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "MosaicName" "string" "AMosaic")
+          (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "Orientation" "string" obj->BaseRotation)
+          (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "columns" "int" obj->BaseMosaicX)
+          (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "rows" "int" obj->BaseMosaicY)
+          (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "CellName" "string" obj->BaseName)
+          (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "LibraryName" "string" obj->BaseLibrary)
+  ))
+     (dbClose auxMosaicCellCv)
+  )) 
+    (setq CreateBaseRod t)
+    (dbClose baseid)
+    (TccInfo "TcfFloorplanClusterPlaceBase" (sprintf nil "Creating base instance for cluster %L" obj->ClusterName))
+
+  ) (progn   (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj->ClusterName "_" iteration "_rod")) cvId)
+      (progn
+     (TccInfo "TcfFloorplanClusterPlaceBase" (sprintf nil "****************Reusing base ROD for cluster %L" obj->ClusterName))
+     (setq maxX (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj->ClusterName "_" iteration "_rod")) cvId)~>width)
+     (setq maxY (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj->ClusterName "_" iteration "_rod")) cvId)~>length)
+     (setq CreateBaseRod nil)
+  ) 
+     (progn
+   (TccInfo "TcfFloorplanClusterPlaceBase" (sprintf nil "****************Creating base ROD for cluster %L" obj->ClusterName))
+   (setq maxX obj->ClusterCellSizeX/1000)
+   (setq maxY obj->ClusterCellSizeY/1000)
+   (setq CreateBaseRod t)
+  )) )) 
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> CreateBaseRod
+  (TccRodCreateRect
+   ?cvId cvId
+   ?layer (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2->isDebugMode (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "grey" (TcfGetDefaultLPPDebugPurpose ?cvId cvId)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "background" "drawing"))
+   ?name  (symbolToString (concat obj2->InstanceName "_" obj->ClusterName "_" obj->BaseName "_" iteration "_rod"))
+   ?width (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> obj->BaseRotation obj->rotatedModes) maxY maxX)*obj->BaseMosaicX
+   ?length (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> obj->BaseRotation obj->rotatedModes) maxX maxY)*obj->BaseMosaicY
+   ?origin (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+      0.0
+      0.0
+  )) ) 
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj->ClusterName "_" obj->BaseName "_" iteration)) cvId)
+  (rodAlign
+   ?refObj (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj->ClusterName "_" obj->BaseName "_" iteration "_rod")) cvId)
+   ?alignHandle "lL"
+   ?alignObj (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj->ClusterName "_" obj->BaseName "_" iteration)) cvId)
+   ?refHandle "lL"
+   ?xSep offsetXB
+   ?ySep offsetYB
+   ?maintain t
+  )
+  ) 
+ (TccInfo "TcfFloorplanClusterPlaceBase" (sprintf nil "The base of the cluster was succesfully placed."))
+
+  (dbSave cvId)
+
+  (putprop obj obj->NumClusters+1 'NumClusters)
+
+  outDPL->RodName <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (symbolToString (concat obj2->InstanceName "_" obj->ClusterName "_" obj->BaseName "_" iteration "_rod"))
+
+  outDPL
+
+  )) <a name="TcfFloorplanClusterPlace"></a>
+<a name="TcfFloorplanClusterPlace"></a><span><a href="../layout1func.html#TcfFloorplanClusterPlace"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFloorplanClusterPlace</span> (cvId obj obj2 )
+  (let (obj )
+ (TccInfo "TcfFloorplanClusterPlace" (sprintf nil "This function is a class reponsability."))
+  )
+  ) <a name="TcfFloorplanClusterPlace"></a>
+<a name="TcfFloorplanClusterPlace"></a><span><a href="../layout1func.html#TcfFloorplanClusterPlace"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFloorplanClusterPlace</span>  (cvId (obj <a class="applied-name" href="layout1func-1.html#TcfFloorplanCluster" title="layout1func">TcfFloorplanCluster</a>) (obj2 <a class="applied-name" href="layout1func-1.html#TcfClusterInstance" title="layout1func">TcfClusterInstance</a>)) (let (tmpCvId offsetX offsetY clusterBBox rodToAlign cellBBox label rod_label prevROD (numPlacedRods 0) (placedRods (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil)) (outDPL (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil)))
+
+ (dbSave cvId)
+ obj2->cvId <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> cvId
+ obj2->baseROD <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterPlaceBase" title="layout1func">TcfFloorplanClusterPlaceBase</a> obj obj2)->RodName  prevROD <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> obj2->baseROD
+
+  (setq placedRods (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> prevROD placedRods))
+
+ (foreachs elem (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> obj->LstOfClusterInstances) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> elem~>Cluster->isLeaf
+      (progn
+     elem->cvId <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> obj2->cvId
+     rodToAlign <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="applied-name" href="layout1func-1.html#TcfPlaceInstanceInCluster" title="layout1func">TcfPlaceInstanceInCluster</a> obj elem)
+  ) 
+    (progn
+      (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> elem~>Cluster->isSeparateCv
+       (progn
+            (TccInfo "TcfFloorplanClusterPlace" (sprintf nil "Creating separate cell %L in %L
+" elem~>Cluster->ClusterName elem~>Cluster->ClusterLibrary))
+      tmpCvId <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (dbOpenCellViewByType elem~>Cluster->ClusterLibrary elem~>Cluster->ClusterName "layout" "maskLayout" "w")
+      (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterPlace" title="layout1func">TcfFloorplanClusterPlace</a> tmpCvId elem~>Cluster elem)
+
+            (setq cellBBox (TcfGetBoundingBox tmpCvId))
+      (dbCreateRect tmpCvId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "chkBoundary" "boundary") cellBBox)
+
+            elem~>Cluster->isLeaf <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> t
+      (dbSave tmpCvId)
+      (dbClose tmpCvId)
+
+            elem->cvId <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> obj2->cvId
+      rodToAlign <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="applied-name" href="layout1func-1.html#TcfPlaceInstanceInCluster" title="layout1func">TcfPlaceInstanceInCluster</a> obj elem)
+  ) 
+     (progn
+           elem->cvId <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> obj2->cvId
+       rodToAlign <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterPlace" title="layout1func">TcfFloorplanClusterPlace</a> obj2->cvId elem~>Cluster elem)
+  )) )) (setq placedRods (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> prevROD placedRods))
+
+       (TccInfo "TcfFloorplanClusterPlace" (sprintf nil "Aligning %L to the base ROD in the cluster %L with AlignTo=%L" rodToAlign obj2->Cluster->ClusterName elem->AlignTo))
+
+     (rodAlign    ?refObj (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (nequal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (parseString elem->AlignTo "&gt;")) "Previous")
+         (rodGetObj obj2->baseROD obj2->cvId) (rodGetObj (nth (atoi (nth 1 (parseString elem->AlignTo "&gt;"))) placedRods) obj2->cvId)) ?alignHandle elem->RefAlignHandle
+      ?alignObj (rodGetObj (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> elem->isTreeModeAlign rodToAlign->BaseRodName rodToAlign->RodName) obj2->cvId) ?refHandle elem->RefRefHandle
+      ?xSep elem->RefOffsetX
+      ?ySep elem->RefOffsetY
+      ?maintain t)
+
+       elem->isPlaced <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> t
+
+       prevROD <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> rodToAlign->RodName
+
+       obj->NumClusters <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> obj->NumClusters <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX249" title="R5RS Skill/Skill++ form">+</a> 1
+     obj2->lstRODs <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> rodToAlign->RodName obj2->lstRODs)
+     (dbSave cvId)
+  ) 
+  (rodAlign
+  ?alignObj (rodGetObj obj2->baseROD cvId)
+  ?alignHandle "uL"
+  ?refPoint (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> -1.0 -1.0)
+  ?refHandle "lL"
+  ?maintain nil)
+ (dbSave cvId)
+ (dbRefreshCellView cvId)
+
+  (TccInfo "TcfFloorplanClusterPlace" (sprintf nil "Aligning base to the complete cluster in cluster %L with base %L" obj2->Cluster->ClusterName obj2->baseROD))
+ (setq clusterBBox (trBBoxUnion (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (getSGq (getSGq (rodGetObj x obj2->cvId) dbId) bBox)) (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> obj2->lstRODs obj2->baseROD)))))
+ obj2->lstRODs <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> nil
+ obj2->clusterROD <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (TccRodCreateRect
+      ?cvId cvId
+      ?layer (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2->isDebugMode (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "green" (TcfGetDefaultLPPDebugPurpose ?cvId cvId)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "background" "drawing"))
+      ?name (symbolToString  (concat obj2->InstanceName "_" obj2->Cluster->ClusterName "_" obj->NumClusters "_rod"))
+      ?origin (lowerLeft clusterBBox)
+      ?width (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (trBBoxDims clusterBBox))
+      ?length (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (trBBoxDims clusterBBox)))
+ obj->NumClusters <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> obj->NumClusters <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX249" title="R5RS Skill/Skill++ form">+</a> 1
+
+  (setq offsetX (difference
+       (xCoord (lowerLeft (getSGq (getSGq (rodGetObj obj2->baseROD obj2->cvId) dbId) bBox)))
+       (xCoord (lowerLeft (getSGq (getSGq obj2->clusterROD dbId) bBox)))
+  ))
+ (setq offsetY (difference
+       (yCoord (lowerLeft (getSGq (getSGq (rodGetObj obj2->baseROD obj2->cvId) dbId) bBox)))
+       (yCoord (lowerLeft (getSGq (getSGq obj2->clusterROD dbId) bBox)))
+  ))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2->isTreeModeAlign
+  (rodAlign    ?refObj (rodGetObj obj2->baseROD obj2->cvId)
+   ?alignHandle "lL"
+   ?alignObj obj2->clusterROD
+   ?refHandle "lL"
+   ?xSep -offsetX+obj2->Cluster->BaseOffsetX
+   ?ySep -offsetY+obj2->Cluster->BaseOffsetY
+   ?maintain t
+  )
+
+   (rodAlign  ?alignObj (rodGetObj obj2->baseROD obj2->cvId)
+    ?alignHandle "lL"
+    ?refObj obj2->clusterROD
+    ?refHandle "lL"
+    ?xSep offsetX+obj2->Cluster->BaseOffsetX
+    ?ySep offsetY+obj2->Cluster->BaseOffsetY
+    ?maintain t)) 
+  (setq label (dbCreateLabel cvId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "text" "drawing") obj2->clusterROD~>cC obj->ClusterName "centerCenter" "R0" "roman" 1))
+ (leAttachFig label obj2->clusterROD~>dbId)
+ (setq rod_label (rodNameShape ?shapeId label)) (rodAlign ?alignObj rod_label ?alignHandle "centerCenter" ?refObj obj2->clusterROD ?refHandle "centerCenter" ?maintain t)
+
+  (dbSave cvId)
+
+ (TccInfo "TcfFloorplanClusterPlace" (sprintf nil "Succesfully finished."))
+
+  outDPL->RodName <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (symbolToString  (concat obj2->InstanceName "_" obj2->Cluster->ClusterName "_" obj->NumClusters-1 "_rod"))
+ outDPL->BaseRodName <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> obj2->baseROD
+
+  outDPL
+
+  )) 
+<a name="TcfPlaceInstanceInCluster"></a><a name="TcfPlaceInstanceInCluster"></a><span><a href="../layout1func.html#TcfPlaceInstanceInCluster"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfPlaceInstanceInCluster</span> ( (obj1 <a class="applied-name" href="layout1func-1.html#TcfFloorplanCluster" title="layout1func">TcfFloorplanCluster</a>) (obj2 <a class="applied-name" href="layout1func-1.html#TcfClusterInstance" title="layout1func">TcfClusterInstance</a>))
+  "places an instance obj2 inside a cluster obj1"
+  (let (auxMosaicCellCv cellid cellBBox maxX maxY (rotatedModes (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "R90" "R270" "MYR90" "MXR90")) offsetX offsetY (cvId obj2->cvId) (Cell (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil)) (clusterName obj1->ClusterName) baseName (iteration 1) label rod_label instance_rod ypnt xpnt (outDPL (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil)) lstOffset)
+
+  (setq iteration obj1->NumClusters)
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv
+  (setq cellid (dbOpenCellViewByType obj2~>Cluster->ClusterLibrary obj2~>Cluster->ClusterName "layout"))
+   (setq cellid (dbOpenCellViewByType obj2~>Cluster->BaseLibrary obj2~>Cluster->BaseName "layout"))
+  )
+
+  (dbRefreshCellView cvId)
+
+  (setq maxX 0.0)
+ (setq maxY 0.0)
+ (setq cellBBox (TcfGetBoundingBox cellid))
+ (TccInfo "TcfPlaceInstanceInCluster" (sprintf nil "Extracted bBox=%L for cluster=%L when placed in cluster=%L as mosaic=%L,%L" cellBBox obj2~>Cluster->ClusterName obj1~>ClusterName obj2~>Cluster->BaseMosaicX obj2~>Cluster->BaseMosaicY))
+
+  (setq lstOffset (TcfGetOffsetsBBox2BBox (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2~>RefRotation obj2~>Cluster->BaseRotation) cellid cellBBox))
+ (setq offsetX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> lstOffset))
+ (setq offsetY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> lstOffset))
+ (setq maxX  obj2~>Cluster->BaseMosaicX*(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2->RefRotation obj2~>Cluster->BaseRotation) rotatedModes) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (trBBoxDims cellBBox)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (trBBoxDims cellBBox))))
+ (setq maxY  obj2~>Cluster->BaseMosaicY*(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2->RefRotation obj2~>Cluster->BaseRotation) rotatedModes) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (trBBoxDims cellBBox)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (trBBoxDims cellBBox))))
+
+  (setq instance_rod (TccRodCreateRect
+      ?cvId cvId
+      ?layer (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2->isDebugMode (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "yellow" (TcfGetDefaultLPPDebugPurpose ?cvId cvId)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "background" "drawing"))
+      ?name  (symbolToString (concat obj2->InstanceName "_" obj1->ClusterName "_" obj2~>Cluster->BaseName "_" iteration "_rod"))
+      ?width obj2~>Cluster->BaseMosaicX*(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2->RefRotation obj2~>Cluster->BaseRotation) rotatedModes) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (trBBoxDims cellBBox)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (trBBoxDims cellBBox)))
+      ?length obj2~>Cluster->BaseMosaicY*(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2->RefRotation obj2~>Cluster->BaseRotation) rotatedModes) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (trBBoxDims cellBBox)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (trBBoxDims cellBBox)))
+      ?origin (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 0.0 0.0)
+  ))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (rodGetObj (strcat obj2->InstanceName "_" obj1->ClusterName "_" obj2->RefName "_rod") cvId) (rodAlign
+   ?alignObj instance_rod
+   ?alignHandle obj2->RefAlignHandle
+   ?xSep obj2->RefOffsetX
+   ?ySep obj2->RefOffsetY
+   ?refObj (rodGetObj (strcat obj2->InstanceName "_" obj1->ClusterName "_" obj2->RefName "_rod") cvId)
+   ?refHandle obj2->RefRefHandle
+   ?maintain t
+  ))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> obj2~>Cluster->BaseMosaicX obj2~>Cluster->BaseMosaicY (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX118" title="R5RS Skill/Skill++ form">or</a> (nequal obj2~>Cluster->BaseMosaicX 1) (nequal obj2~>Cluster->BaseMosaicY 1))))
+  (progn
+    (dbCreateInst cvId cellid (symbolToString (concat obj2->InstanceName "_" obj1->ClusterName "_" obj2~>Cluster->BaseName "_" iteration))
+      (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+       0.0
+       0.0
+  ) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2->RefRotation obj2~>Cluster->BaseRotation) 1)
+
+  ) (progn
+  (setq auxMosaicCellCv (dbOpenCellViewByType (TccLib "scribe") "auxMosaicCell"  "layout" "maskLayout" "r"))
+  (dbCreateParamInst cvId auxMosaicCellCv
+         (symbolToString (concat obj2->InstanceName "_" obj1->ClusterName "_" obj2~>Cluster->BaseName "_" iteration))
+         0:0
+         "R0"       1
+         (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+       (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "MosaicName" "string" "AMosaic")
+       (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "Orientation" "string" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2->RefRotation obj2~>Cluster->BaseRotation))
+       (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "columns" "int" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2->RefRotation obj2~>Cluster->BaseRotation) rotatedModes) obj2~>Cluster->BaseMosaicY obj2~>Cluster->BaseMosaicX))
+       (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "rows" "int" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2->RefRotation obj2~>Cluster->BaseRotation) rotatedModes) obj2~>Cluster->BaseMosaicX obj2~>Cluster->BaseMosaicY))
+       (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "LibraryName" "string" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2~>Cluster->ClusterLibrary obj2~>Cluster->BaseLibrary))
+       (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "CellName" "string" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> obj2~>Cluster->isSeparateCv obj2~>Cluster->ClusterName obj2~>Cluster->BaseName))
+  ))
+  (dbClose auxMosaicCellCv)
+  )) 
+  (setq label (dbCreateLabel cvId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "text" "drawing") (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj1->ClusterName "_" obj2~>Cluster->BaseName "_" iteration "_rod")) cvId)~>cC (symbolToString (concat obj2~>Cluster->ClusterName "." obj2~>Cluster->BaseRotation "." obj2->RefAlignHandle "~&gt;" obj1->ClusterName "." obj2->RefRefHandle)) "centerCenter" "R0" "roman" 0.02))
+ (leAttachFig label (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj1->ClusterName "_" obj2~>Cluster->BaseName "_" iteration "_rod")) cvId)~>dbId)
+ (setq rod_label (rodNameShape ?shapeId label)) (rodAlign ?alignObj rod_label ?alignHandle "centerCenter" ?refObj (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj1->ClusterName "_" obj2~>Cluster->BaseName "_" iteration "_rod")) cvId) ?refHandle "centerCenter" ?maintain t)
+
+  (rodAlign   ?alignObj   (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj1->ClusterName "_" obj2~>Cluster->BaseName "_" iteration)) cvId)
+  ?alignHandle "lL"
+  ?xSep offsetX
+  ?ySep offsetY
+  ?refObj (rodGetObj (symbolToString (concat obj2->InstanceName "_" obj1->ClusterName "_" obj2~>Cluster->BaseName "_" iteration "_rod")) cvId)
+  ?refHandle "lL"
+  ?maintain t
+  ) 
+  (dbClose cellid)
+ (TccInfo "TcfPlaceInstanceCluster" (sprintf nil "Function has succesfully finished."))
+
+  (dbSave cvId)
+
+  outDPL->RodName=(symbolToString (concat obj2->InstanceName "_" obj1->ClusterName "_" obj2~>Cluster->BaseName "_" iteration "_rod"))
+
+  outDPL
+
+  )) 
+<a name="TcfFloorplanAddClusterToCluster"></a><a name="TcfFloorplanAddClusterToCluster"></a><span><a href="../layout1func.html#TcfFloorplanAddClusterToCluster"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFloorplanAddClusterToCluster</span> ( (obj1 <a class="applied-name" href="layout1func-1.html#TcfFloorplanCluster" title="layout1func">TcfFloorplanCluster</a>) (obj2 <a class="applied-name" href="layout1func-1.html#TcfClusterInstance" title="layout1func">TcfClusterInstance</a>))
+  (let (I)
+
+  obj1->LstOfClusterInstances <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> obj2 obj1->LstOfClusterInstances)
+
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX335" title="R5RS Skill/Skill++ form">reverse</a> obj1->LstOfClusterInstances)
+
+  )) 
+<a name="TcfSCRIBEInitModuleAssembler"></a><a name="TcfSCRIBEInitModuleAssembler"></a><span><a href="../layout1func.html#TcfSCRIBEInitModuleAssembler"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfSCRIBEInitModuleAssembler</span> (cvId paramDpl)
+  (let (boundaryshape topROD)
+
+  (putprop paramDpl (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> paramDpl->CenterX paramDpl->CenterY) 'centerPoint)
+
+  (unless (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> paramDpl->CellSizeX paramDpl->CellSizeY)
+   paramDpl->CellSizeX <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> 10
+   paramDpl->CellSizeY <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> 10
+   paramDpl->AdjustCellSize <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> t
+  ) 
+  (unless (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> paramDpl->CenterX paramDpl->CenterY)
+   paramDpl->CenterX <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> 0
+   paramDpl->CenterY <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> 0
+   paramDpl->AlignmenType <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> "lL"
+  ) 
+  (putprop paramDpl
+    (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+     (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> paramDpl->CenterX-paramDpl->CellSizeX/2 paramDpl->CenterY-paramDpl->CellSizeY/2)
+     (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> paramDpl->CenterX+paramDpl->CellSizeX/2 paramDpl->CenterY+paramDpl->CellSizeY/2)
+  ) 'bBox
+  )
+ (TccInfo "TcfSCRIBEInitModuleAssembler" (sprintf nil "~~~ Floorplan bBox=%L, for centerPoint=%L ~~~" paramDpl->bBox paramDpl->centerPoint))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal cvId~>mode "a")
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (rodIsObj (rodGetObj "top_rod" cvId))
+   (dbDeleteObject (rodGetObj "top_rod" cvId)~>dbId)
+  )) 
+  (unless (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> cvId~>mode (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "r" "a"))
+   (setq topROD
+   (TccRodCreateRect
+    ?cvId cvId
+    ?name "top_rod"
+    ?layer (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "background" "drawing")
+    ?origin (lowerLeft paramDpl->bBox)
+    ?width paramDpl->CellSizeX
+    ?length paramDpl->CellSizeY
+  )) ) 
+  (putprop paramDpl topROD 'topROD)
+ (putprop paramDpl 1 'iteration) 
+ t
+  )) <a name="TcfSCRIBECreateClusterModuleAssembler"></a>
+<a name="TcfSCRIBECreateClusterModuleAssembler"></a><span><a href="../layout1func.html#TcfSCRIBECreateClusterModuleAssembler"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfSCRIBECreateClusterModuleAssembler</span> (cvId paramDpl)
+  "We keep adding clusters to our list of clusters"
+  (let (OutputCvId C BaseObjLst (BaseObjInfo (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil)) addedcluster)
+
+ 
+  (setq BaseObjLst (parseString paramDpl->funParams->BaseInfo "."))
+ (putprop BaseObjInfo (nth 0 BaseObjLst) 'LibraryName)
+ (putprop BaseObjInfo (nth 1 BaseObjLst) 'CellName)
+ (putprop BaseObjInfo (nth 2 BaseObjLst) 'Rotation)
+ (putprop BaseObjInfo (nth 3 BaseObjLst) 'alignHandle)
+ (putprop BaseObjInfo (atof (nth 4 BaseObjLst))/1000 'xSep)
+ (putprop BaseObjInfo (atof (nth 5 BaseObjLst))/1000 'ySep)
+
+  (setq C (makeInstance 'TcfFloorplanCluster
+        ?ClusterName paramDpl->funParams->ClusterName
+        ?isBaseACell paramDpl->funParams->isBaseACell
+        ?isSeparateCv paramDpl->funParams->isSeparateCv
+        ?isLeaf nil
+  ))
+
+  (setq addedcluster (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (setofs x paramDpl->lstOfClusters (equal (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterGetName" title="layout1func">TcfFloorplanClusterGetName</a> x) BaseObjInfo->CellName ))))
+ (when addedcluster
+   C->isBaseACluster <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> t
+   C->BaseCluster <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> addedcluster
+  ) 
+  C->ClusterLibrary <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> paramDpl->funParams->ClusterLibrary
+ C->BaseMosaicX <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> paramDpl->funParams->BaseMosaicX paramDpl->funParams->BaseMosaicX 1)
+ C->BaseMosaicY <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> paramDpl->funParams->BaseMosaicY paramDpl->funParams->BaseMosaicY 1)
+
+  (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterSetSize" title="layout1func">TcfFloorplanClusterSetSize</a> C (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> paramDpl->funParams->ClusterSizeX paramDpl->funParams->ClusterSizeY))
+ (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterSetBase" title="layout1func">TcfFloorplanClusterSetBase</a> C BaseObjInfo->CellName BaseObjInfo->LibraryName paramDpl->funParams->isBaseACell BaseObjInfo->xSep BaseObjInfo->ySep BaseObjInfo->Rotation)
+
+  (putprop paramDpl (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX320" title="R5RS Skill/Skill++ form">cons</a> C paramDpl->lstOfClusters) 'lstOfClusters)
+
+ (TccInfo "TcfSCRIBECreateClusterModuleAssembler" (sprintf nil "Cluster %L with base %L has been added to the list of clusters.
+" paramDpl->funParams->ClusterName paramDpl->funParams->BaseInfo))
+
+ t
+  )) <a name="TcfSCRIBEAddToClusterModuleAssembler"></a>
+<a name="TcfSCRIBEAddToClusterModuleAssembler"></a><span><a href="../layout1func.html#TcfSCRIBEAddToClusterModuleAssembler"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfSCRIBEAddToClusterModuleAssembler</span> (cvId paramDpl)
+  (let (targetcluster (CellObjInfo (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil)) C I addedcluster IndividualCell)
+
+ 
+  (setq targetcluster (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (setofs x paramDpl->lstOfClusters (equal (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterGetName" title="layout1func">TcfFloorplanClusterGetName</a> x) paramDpl->funParams->ClusterName ))))
+
+  (setq IndividualCell (parseString paramDpl->funParams->CellInfo "."))
+ (putprop CellObjInfo (nth 0 IndividualCell) 'LibraryName)
+ (putprop CellObjInfo (nth 1 IndividualCell) 'CellName)
+ (putprop CellObjInfo (nth 2 IndividualCell) 'Rotation)
+ (putprop CellObjInfo (nth 3 IndividualCell) 'alignHandle)
+ (putprop CellObjInfo (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (atof (nth 4 IndividualCell)) 1000) 'xSep)
+ (putprop CellObjInfo (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (atof (nth 5 IndividualCell)) 1000) 'ySep)
+ (putprop CellObjInfo (nth 6 IndividualCell) 'refObj)
+ (putprop CellObjInfo (nth 7 IndividualCell) 'refHandle)
+
+  (setq addedcluster (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (setofs x paramDpl->lstOfClusters (equal (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterGetName" title="layout1func">TcfFloorplanClusterGetName</a> x) CellObjInfo->CellName ))))
+
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> addedcluster   (progn
+    (setq I (makeInstance 'TcfClusterInstance ?InstanceName (symbolToString (concat "inst" paramDpl->iteration)) ?RefName CellObjInfo->refObj ?RefOffsetX CellObjInfo->xSep ?RefOffsetY CellObjInfo->ySep ?RefAlignHandle CellObjInfo->alignHandle ?RefRefHandle CellObjInfo->refHandle ?isRefPlaced t ?isPlaced nil ?Cluster addedcluster))
+    I->RefRotation <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> CellObjInfo->Rotation
+    I->AlignTo <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> paramDpl->funParams->AlignTo paramDpl->funParams->AlignTo "Base")
+    I->isTreeModeAlign <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> addedcluster->isSeparateCv nil paramDpl->funParams->isTreeModeAlign) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> paramDpl->isDebugMode (<a class="applied-name" href="layout1func-1.html#TcfClusterInstanceSetDebugMode" title="layout1func">TcfClusterInstanceSetDebugMode</a> I))
+    (<a class="applied-name" href="layout1func-1.html#TcfFloorplanAddClusterToCluster" title="layout1func">TcfFloorplanAddClusterToCluster</a> targetcluster I)
+  ) 
+   (progn
+  (setq C (makeInstance 'TcfFloorplanCluster
+         ?ClusterName (symbolToString (concat CellObjInfo->CellName paramDpl->iteration))
+         ?isBaseACell paramDpl->funParams->isBaseACell
+         ?isSeparateCv nil
+         ?isLeaf t
+  ))
+  C->BaseMosaicX <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> paramDpl->funParams->BaseMosaicX paramDpl->funParams->BaseMosaicX 1)
+  C->BaseMosaicY <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> paramDpl->funParams->BaseMosaicY paramDpl->funParams->BaseMosaicY 1)
+  (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterSetBase" title="layout1func">TcfFloorplanClusterSetBase</a> C CellObjInfo->CellName CellObjInfo->LibraryName nil CellObjInfo->xSep CellObjInfo->ySep CellObjInfo->Rotation)
+  (TccInfo "TcfSCRIBEAddToClusterModuleAssembler" (sprintf nil "Added cluster %L to %L"  C~>ClusterName targetcluster~>ClusterName))
+
+  (setq I (makeInstance 'TcfClusterInstance ?InstanceName (symbolToString (concat "inst" paramDpl->iteration)) ?RefName CellObjInfo->refObj ?RefOffsetX CellObjInfo->xSep ?RefOffsetY CellObjInfo->ySep ?RefAlignHandle CellObjInfo->alignHandle ?RefRefHandle CellObjInfo->refHandle ?isRefPlaced t ?isPlaced nil ?Cluster C))
+  I->AlignTo <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> paramDpl->funParams->AlignTo paramDpl->funParams->AlignTo "Base")
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> paramDpl->isDebugMode (<a class="applied-name" href="layout1func-1.html#TcfClusterInstanceSetDebugMode" title="layout1func">TcfClusterInstanceSetDebugMode</a> I))
+  (<a class="applied-name" href="layout1func-1.html#TcfFloorplanAddClusterToCluster" title="layout1func">TcfFloorplanAddClusterToCluster</a> targetcluster I)
+
+  )) 
+  paramDpl->iteration <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> paramDpl->iteration <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX249" title="R5RS Skill/Skill++ form">+</a> 1
+ t
+  )) <a name="TcfSCRIBEPlaceClusterModuleAssembler"></a>
+<a name="TcfSCRIBEPlaceClusterModuleAssembler"></a><span><a href="../layout1func.html#TcfSCRIBEPlaceClusterModuleAssembler"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfSCRIBEPlaceClusterModuleAssembler</span> (cvId paramDpl)
+  (let (topcluster I cluster_rod fullinst counter lstDebugLayers)
+
+  (setq topcluster (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (setofs x paramDpl->lstOfClusters (equal (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterGetName" title="layout1func">TcfFloorplanClusterGetName</a> x) paramDpl->funParams->ClusterName ))))
+ (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterSetRoot" title="layout1func">TcfFloorplanClusterSetRoot</a> topcluster t) (setq I (makeInstance 'TcfClusterInstance ?InstanceName "top" ?RefName "top_rod" ?RefOffsetX 0.0 ?RefOffsetY 0.0 ?RefAlignHandle "cC" ?RefRefHandle "cC" ?isRefPlaced t ?isPlaced nil ?Cluster topcluster))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> paramDpl->isDebugMode (<a class="applied-name" href="layout1func-1.html#TcfClusterInstanceSetDebugMode" title="layout1func">TcfClusterInstanceSetDebugMode</a> I))
+ (setq cluster_rod (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterPlace" title="layout1func">TcfFloorplanClusterPlace</a> cvId topcluster I)->RodName)
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> paramDpl->isDebugMode (<a class="applied-name" href="layout1func-1.html#TcfClusterInstanceSetDebugMode" title="layout1func">TcfClusterInstanceSetDebugMode</a> I))
+ (TccInfo "TcfSCRIBEPlaceClusterModuleAssembler" (sprintf nil "**** The top ROD for the cluster is: %L ****" cluster_rod))
+
+  (when paramDpl->AdjustCellSize
+   paramDpl->CellSizeX <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (rodGetObj cluster_rod cvId)~>width
+   paramDpl->CellSizeY <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (rodGetObj cluster_rod cvId)~>length
+  ) 
+ (unless (equal paramDpl->AlignmentType "Centered")
+   paramDpl->CenterX <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> paramDpl->CellSizeX/2
+   paramDpl->CenterY <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> paramDpl->CellSizeY/2
+  ) 
+  (putprop paramDpl
+    (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+     (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> paramDpl->CenterX-paramDpl->CellSizeX/2 paramDpl->CenterY-paramDpl->CellSizeY/2)
+     (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> paramDpl->CenterX+paramDpl->CellSizeX/2 paramDpl->CenterY+paramDpl->CellSizeY/2)
+  ) 'bBox
+  )
+
+  (rodGetObj "top_rod" cvId)~>dbId->lpp <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "chkBoundary" "boundary")
+ (rodGetObj "top_rod" cvId)~>dbId->bBox <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> paramDpl->bBox
+ (rodAlign   ?alignObj (rodGetObj cluster_rod cvId)
+  ?alignHandle "lL"
+  ?xSep 0.0
+  ?ySep 0.0
+  ?refObj (rodGetObj "top_rod" cvId)
+  ?refHandle "lL"
+  ?maintain t) (dbSave cvId)
+
+  (rodAlign
+  ?alignObj (rodGetObj "top_rod" cvId)
+  ?alignHandle "uL"
+  ?refPoint (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> -1.0 -1.0)
+  ?refHandle "lL"
+  ?maintain nil)
+ (dbSave cvId)
+ (dbRefreshCellView cvId)
+
+  (rodAlign
+  ?alignObj (rodGetObj "top_rod" cvId)
+  ?alignHandle "cC"
+  ?refPoint (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> paramDpl->CenterX paramDpl->CenterY)
+  ?refHandle "cC"
+  ?maintain nil
+  ) 
+ (dbSave cvId)
+ (dbRefreshCellView cvId)
+
+  (setq fullinst (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> cvId~>instances))
+ (setq counter 0)
+ (foreachs elem cvId~>instances
+     (when (equal (mod (int 100*counter/fullinst) 5) 0)
+    (TccInfo "TcfSCRIBEPlaceClusterModuleAssembler" (sprintf nil "Unalign progress: %L percent" (int 100*counter/fullinst)))
+    (gc)) (rodUnAlign (rodGetObj elem~>name cvId))
+
+     (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal elem~>cellName "auxMosaicCell")
+      (dbFlattenInst elem 1 t)
+  ) (setq counter (add1 counter))
+  ) 
+  (mapcar 'dbDeleteObject (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (dbGetTrueOverlaps cvId cvId~>bBox (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "background" "drawing") 0))))
+ lstDebugLayers <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (setofs x cvId~>lpps (equal x~>purpose (TcfGetDefaultLPPDebugPurpose ?cvId cvId)))~>layerName
+ (foreachs elem lstDebugLayers
+     (mapcar 'dbDeleteObject (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (dbGetTrueOverlaps cvId cvId~>bBox (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> elem (TcfGetDefaultLPPDebugPurpose ?cvId cvId)) 0))))
+  ) t
+  )) 
+<div class="schemedoc-section-comment">;;; Frame building functions
+;;; .section-id framebuildingfunctions
+;;; - This section contains the beard/blank/container/corner letter frame building functions</div>
+<a name="TcfCreateFrameSide"></a><a name="TcfCreateFrameSide"></a><span><a href="../layout1func.html#TcfCreateFrameSide"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfCreateFrameSide</span> ((F <a class="applied-name" href="layout1func-1.html#TcfFloorplanCluster" title="layout1func">TcfFloorplanCluster</a>) searchcorner searchside lstFrameCells @key (direction "E") (prevDir "S") (isInternalCorner nil) (iteration 1) (PlaceCorner t) (offset 0) (cornerAlignHandle "lL") (cornerRefHandle "lL") (sideAlignHandle "lL") (sideRefHandle "lL")) "Adds a side to the frame"
+  (let (Cc Ic Cs Is sideCv cornerCv relativeoffsetcorner relativeoffsetside relativeoffset leftCv bottomCv type)
+
+ (setq type (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> (parseString searchcorner "_")))
+ (setq leftCv (dbOpenCellViewByType (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "left")) "Library") (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "left")) "CellName") "layout" "maskLayout" "r"))
+ (setq bottomCv (dbOpenCellViewByType (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "bottom")) "Library") (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "bottom")) "CellName") "layout" "maskLayout" "r"))
+
+ (when PlaceCorner
+
+   (setq Cc (makeInstance 'TcfFloorplanCluster
+        ?ClusterName (symbolToString (concat "Corner" iteration))
+        ?isBaseACell t
+        ?isSeparateCv nil
+        ?isLeaf t))
+
+   (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterSetBase" title="layout1func">TcfFloorplanClusterSetBase</a> Cc (TcfXmlFind ?root (get lstFrameCells searchcorner) "CellName") (TcfXmlFind ?root (get lstFrameCells searchcorner) "Library") nil 0.0 0.0 (TcfXmlFind ?root (get lstFrameCells searchcorner) "Orientation"))
+
+   (setq Ic (makeInstance 'TcfClusterInstance
+        ?InstanceName (symbolToString (concat "inst" iteration "_corner"))
+        ?RefName ""
+        ?RefOffsetX 0.0
+        ?RefOffsetY 0.0
+        ?RefAlignHandle cornerAlignHandle
+        ?RefRefHandle cornerRefHandle
+        ?isRefPlaced t
+        ?isPlaced nil
+        ?Cluster Cc))
+   Ic->AlignTo <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a>  "Previous&gt;0"
+   (<a class="applied-name" href="layout1func-1.html#TcfFloorplanAddClusterToCluster" title="layout1func">TcfFloorplanAddClusterToCluster</a> F Ic)
+  ) (when (nequal offset 0)
+
+   
+   (setq Cs (makeInstance 'TcfFloorplanCluster
+        ?ClusterName (symbolToString (concat "Side" iteration))
+        ?isBaseACell t
+        ?isSeparateCv nil
+        ?isLeaf t
+  ))
+
+   Cs->BaseMosaicX <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> direction (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "W" "E")) offset 1)
+   Cs->BaseMosaicY <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> direction (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "N" "S")) offset 1)
+   (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterSetBase" title="layout1func">TcfFloorplanClusterSetBase</a> Cs (TcfXmlFind ?root (get lstFrameCells searchside) "CellName") (TcfXmlFind ?root (get lstFrameCells searchside) "Library") nil 0.0 0.0 (TcfXmlFind ?root (get lstFrameCells searchside) "Orientation"))
+
+   (setq Is (makeInstance 'TcfClusterInstance
+        ?InstanceName (symbolToString (concat "inst" iteration "_side"))
+        ?RefName ""
+        ?RefOffsetX 0.0
+        ?RefOffsetY 0.0
+        ?RefAlignHandle sideAlignHandle
+        ?RefRefHandle sideRefHandle
+        ?isRefPlaced t
+        ?isPlaced nil
+        ?Cluster Cs))
+   Is->AlignTo <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a>  "Previous&gt;0"
+   (<a class="applied-name" href="layout1func-1.html#TcfFloorplanAddClusterToCluster" title="layout1func">TcfFloorplanAddClusterToCluster</a> F Is)
+  ) 
+  (setq cornerCv (dbOpenCellViewByType (TcfXmlFind ?root (get lstFrameCells searchcorner) "Library") (TcfXmlFind ?root (get lstFrameCells searchcorner) "CellName") "layout" "maskLayout" "r"))
+ (setq sideCv (dbOpenCellViewByType (TcfXmlFind ?root (get lstFrameCells searchside) "Library") (TcfXmlFind ?root (get lstFrameCells searchside) "CellName") "layout" "maskLayout" "r"))
+
+  (setq relativeoffsetcorner (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> isInternalCorner
+           (TcfGetXdim cornerCv ?orientation (TcfXmlFind ?root (get lstFrameCells searchcorner) "Orientation"))<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX251" title="R5RS Skill/Skill++ form">-</a>(TcfGetXdim leftCv ?orientation (TcfXmlFind ?root (get lstFrameCells "left") "Orientation"))
+           (TcfGetXdim cornerCv ?orientation (TcfXmlFind ?root (get lstFrameCells searchcorner) "Orientation")))
+          (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> isInternalCorner
+           (TcfGetYdim cornerCv ?orientation (TcfXmlFind ?root (get lstFrameCells searchcorner) "Orientation"))<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX251" title="R5RS Skill/Skill++ form">-</a>(TcfGetYdim bottomCv ?orientation (TcfXmlFind ?root (get lstFrameCells "bottom") "Orientation"))
+           (TcfGetYdim cornerCv ?orientation (TcfXmlFind ?root (get lstFrameCells searchcorner) "Orientation")))))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (TccEQP offset 0)
+  (setq relativeoffsetside (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 0.0 0.0))
+   (setq relativeoffsetside (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal Cs->BaseMosaicX 1) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> direction (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "E" "W")) 1.0 0.0) Cs->BaseMosaicX)<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX250" title="R5RS Skill/Skill++ form">*</a>(TcfGetXdim sideCv ?orientation (TcfXmlFind ?root (get lstFrameCells searchside) "Orientation"))
+          (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal Cs->BaseMosaicY 1) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> direction (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "N" "S")) 1.0 0.0) Cs->BaseMosaicY)<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX250" title="R5RS Skill/Skill++ form">*</a>(TcfGetYdim sideCv ?orientation (TcfXmlFind ?root (get lstFrameCells searchside) "Orientation"))
+  )) ) (TccInfo "TccFrameContourBuilder" (sprintf nil "Extracted side offset=%L" relativeoffsetside))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> direction (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "W" "E")) (progn
+    (setq relativeoffsetside
+    (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+     (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "W") -1.0 1.0)<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX250" title="R5RS Skill/Skill++ form">*</a>(plus (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> relativeoffsetside) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> relativeoffsetcorner))
+     0.0
+  ))
+    (setq relativeoffsetcorner
+    (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+     0.0
+     (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> prevDir (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "S" "")) -1.0 1.0)<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX250" title="R5RS Skill/Skill++ form">*</a>(<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> relativeoffsetcorner)
+  ))) 
+   (progn
+  (setq relativeoffsetside
+     (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+      0.0
+      (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal direction "S") -1.0 1.0)<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX250" title="R5RS Skill/Skill++ form">*</a>(plus (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> relativeoffsetside) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> relativeoffsetcorner))))
+  (setq relativeoffsetcorner
+     (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+      (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal prevDir "W") -1.0 1.0)<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX250" title="R5RS Skill/Skill++ form">*</a>(<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> relativeoffsetcorner)
+      0.0))
+  ) 
+  ) 
+  (setq relativeoffset (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> relativeoffsetcorner relativeoffsetside))
+
+ (TccInfo "TccFrameContourBuilder" (sprintf nil "Due to processing prevDir=%L, direction=%L: then relative offset corner,side=%L" prevDir direction relativeoffset))
+
+  (dbClose cornerCv)
+ (dbClose sideCv)
+ (dbClose bottomCv)
+ (dbClose leftCv)
+
+ relativeoffset
+
+  )) 
+<a name="TcfCreateContourFrame"></a><a name="TcfCreateContourFrame"></a><span><a href="../layout1func.html#TcfCreateContourFrame"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfCreateContourFrame</span> (contourString type innerLayers outerLayers processName cvId @key
+           (reflect nil)
+           (FrameName "tp0frame")
+           (lowerXAlign 0.0)
+           (lowerYAlign 0.0)
+           (lstKeepGenAwayLayers (TcfGetDefaultKeepGenAwayLayers))
+           (coreLibrary nil)
+           (coreCell nil))
+  "Creates a frame according to a contourString starting from lowerLeft corner"
+
+ (let (F I fillerWX fillerWY parsedContour prevDir direction lstOutterPoints currentPoint cornerCv sideCv (lstFrameCells (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> nil)) data (iteration 0) newPoints isInternalCorner offset offsetPair offsetXY XSizing YSizing innershape outershape bandshape mlpp fullinst counter Cc Ic tmpShape PlaceCorner searchcorner searchside cornerAlignHandle cornerRefHandle sideAlignHandle sideRefHandle floorplan internalshape lstOffset relativeoffset firstcell lstShapes (prev_sideRefHandle "lR") (prev_sideAlignHandle "lL") (prev_offset 1) frameshapes)
+
+ (TccInfo "TccFrameContourBuilder" (sprintf nil "The contour string is: %L" contourString))
+
+  (setq data (TcfXmlLoad))
+
+  (foreachs location (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "ll" "ur" "ul" "lr" "ul_ext" "ll_ext" "lr_ext" "ur_ext" "bottom" "top" "left" "right")
+     (putprop lstFrameCells (TcfXmlFind ?root data processName
+             (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> reflect
+              (strcat type "_" (<a class="applied-name" href="layout1func-1.html#TcfFrameCellLocationReflect" title="layout1func">TcfFrameCellLocationReflect</a> location))
+               (strcat type "_" location)
+  ))
+        (strcat type "_" location))
+  ) 
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> type (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "eow")) (setq reflect (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> reflect)))
+
+  (setq cornerCv (dbOpenCellViewByType (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "ll")) "Library") (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "ll")) "CellName") "layout" "maskLayout" "r"))
+ (setq parsedContour (parseString contourString))
+ (setq prevDir "")
+ (setq currentPoint (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> lowerXAlign (plus lowerYAlign
+              (TcfGetYdim cornerCv ?orientation (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "ll")) "Orientation"))
+  )))
+ (setq lstOutterPoints (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> currentPoint))
+ (setq iteration 1)
+ (dbClose cornerCv)
+
+  (setq F (makeInstance 'TcfFloorplanCluster
+        ?ClusterName FrameName
+        ?isBaseACell t
+        ?isLeaf nil
+        ?isSeparateCv nil
+        ?isRoot t))
+
+ (TccInfo "TccFrameContourBuilder" (sprintf nil "The current list of fetched frame cells is: %L" lstFrameCells))
+
+  (setq firstcell (get lstFrameCells (strcat type "_" "ll")))
+ (TccInfo "TcfFrameContourBuilder" (sprintf nil "Placing the base cell %L from library %L with orientation %L" (TcfXmlFind ?root firstcell "CellName") (TcfXmlFind ?root firstcell "Library") (TcfXmlFind ?root firstcell "Orientation")))
+ (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterSetBase" title="layout1func">TcfFloorplanClusterSetBase</a> F (TcfXmlFind ?root firstcell "CellName") (TcfXmlFind ?root firstcell "Library") t 0.0 0.0 (TcfXmlFind ?root firstcell "Orientation"))
+
+  (foreachs elementS parsedContour
+     (TccInfo "TcfFrameContourBuilder" (sprintf nil "The current point is = %L when starting iteration = %d with instruction %L" currentPoint iteration elementS))
+     (setq direction (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX391" title="R5RS Skill/Skill++ form">substring</a> elementS 1 1))
+     (setq offset (evalstring (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX391" title="R5RS Skill/Skill++ form">substring</a> elementS 2 (sub1 (strlen elementS)))))
+
+       (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX110" title="R5RS Skill/Skill++ form">cond</a>
+      ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal prevDir "") (equal direction "E")) 
+    (setq searchcorner "ll")
+    (setq searchside "bottom")
+    (setq cornerAlignHandle "uL")
+    (setq cornerRefHandle "lL")
+    (setq sideAlignHandle "lL")
+    (setq sideRefHandle "lR")
+    (setq PlaceCorner nil)
+    (setq isInternalCorner nil)
+
+  ) 
+      ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal prevDir "E") (equal direction "S"))
+
+    (setq searchcorner "ll_ext")
+    (setq searchside "left")
+    (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> reflect)
+     (progn
+       (setq cornerAlignHandle "lL")
+       (setq cornerRefHandle "lR")
+       (setq sideAlignHandle "uL")
+       (setq sideRefHandle "lL")
+  ) (progn      (setq cornerAlignHandle "uL")
+     (setq cornerRefHandle "uR")
+     (setq sideAlignHandle "uR")
+     (setq sideRefHandle "lR")
+  )) (setq PlaceCorner t)
+    (setq isInternalCorner t)
+
+  ) 
+      ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal prevDir "S") (equal direction "E")) 
+    (setq searchcorner "ll") (setq searchside "bottom")
+
+    (setq cornerAlignHandle "uL")
+    (setq cornerRefHandle "lL")
+    (setq sideAlignHandle "lL")
+    (setq sideRefHandle "lR")
+
+    (setq PlaceCorner t)
+    (setq isInternalCorner nil)
+
+  ) 
+      ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal prevDir "E") (equal direction "N"))
+
+    (setq searchcorner "lr")
+    (setq searchside "right")
+
+    (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> reflect)
+     (progn
+       (setq cornerAlignHandle "lL")
+       (setq cornerRefHandle "lR")
+       (setq sideAlignHandle "lR")
+       (setq sideRefHandle "uR")
+  ) (progn
+     (setq cornerAlignHandle "uL")
+     (setq cornerRefHandle "uR")
+     (setq sideAlignHandle "lL")
+     (setq sideRefHandle "uL")
+  )) (setq PlaceCorner t)
+    (setq isInternalCorner nil)
+
+  ) 
+      ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal prevDir "N") (equal direction "E"))
+
+    (setq searchcorner "lr_ext")
+    (setq searchside "bottom")
+
+    (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> reflect)
+     (progn
+       (setq cornerAlignHandle "lR")
+       (setq cornerRefHandle "uR")
+       (setq sideAlignHandle "lL")
+       (setq sideRefHandle "lR")
+  ) (progn
+     (setq cornerAlignHandle "lL")
+     (setq cornerRefHandle "uL")
+     (setq sideAlignHandle "uL")
+     (setq sideRefHandle "uR")
+  )) (setq PlaceCorner t)
+    (setq isInternalCorner t)
+  ) 
+      ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal prevDir "N") (equal direction "W"))
+
+    (setq searchcorner "ur")
+    (setq searchside "top")
+
+    (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> reflect)
+     (progn
+       (setq cornerAlignHandle "lR")
+       (setq cornerRefHandle "uR")
+       (setq sideAlignHandle "uR")
+       (setq sideRefHandle "uL")
+  ) (progn      (setq cornerAlignHandle "lL")
+     (setq cornerRefHandle "uL")
+     (setq sideAlignHandle "lR")
+     (setq sideRefHandle "lL")
+  )) (setq PlaceCorner t)
+    (setq isInternalCorner nil)
+
+  ) 
+      ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal prevDir "W") (equal direction "N"))
+
+    (setq searchcorner "ur_ext")
+    (setq searchside "right")
+
+    (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> reflect)
+     (progn
+       (setq cornerAlignHandle "uR")
+       (setq cornerRefHandle "uL")
+       (setq sideAlignHandle "lR")
+       (setq sideRefHandle "uR")
+  ) (progn
+     (setq cornerAlignHandle "lR")
+     (setq cornerRefHandle "lL")
+     (setq sideAlignHandle "lL")
+     (setq sideRefHandle "uL")
+  )) (setq PlaceCorner t)
+    (setq isInternalCorner t)
+
+  ) 
+      ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal prevDir "W") (equal direction "S"))
+
+    (setq searchcorner "ul")
+    (setq searchside "left")
+    (setq cornerAlignHandle "uR")
+    (setq cornerRefHandle "uL")
+    (setq sideAlignHandle "uL")
+    (setq sideRefHandle "lL")
+    (setq PlaceCorner t)
+    (setq isInternalCorner nil)
+
+  ) 
+      ((<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (equal prevDir "S") (equal direction "W"))
+
+    (setq searchcorner "ul_ext")
+    (setq searchside "top")
+    (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> reflect)
+     (progn
+       (setq cornerAlignHandle "uL")
+       (setq cornerRefHandle "lL")
+       (setq sideAlignHandle "uR")
+       (setq sideRefHandle "uL")
+  ) (progn
+     (setq cornerAlignHandle "uR")
+     (setq cornerRefHandle "lR")
+     (setq sideAlignHandle "lR")
+     (setq sideRefHandle "lL")
+  )) (setq PlaceCorner t)
+    (setq isInternalCorner t)
+
+  ) 
+      (t
+    (error "This case is not valid
+")
+  )
+
+  ) 
+       (when (equal prev_offset 0)
+    (setq cornerRefHandle prev_sideRefHandle)
+    (setq cornerAlignHandle prev_sideAlignHandle)
+  ) (setq prev_offset offset)
+     (setq prev_sideRefHandle sideRefHandle)
+     (setq prev_sideAlignHandle sideAlignHandle)
+
+       (setq offsetPair (<a class="applied-name" href="layout1func-1.html#TcfCreateFrameSide" title="layout1func">TcfCreateFrameSide</a> F (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> searchcorner (strcat type "_" searchcorner) nil) (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> searchside (strcat type "_" searchside) nil) lstFrameCells ?direction direction ?prevDir prevDir ?isInternalCorner isInternalCorner ?iteration iteration ?PlaceCorner PlaceCorner ?offset offset ?cornerAlignHandle cornerAlignHandle ?cornerRefHandle cornerRefHandle ?sideAlignHandle sideAlignHandle ?sideRefHandle sideRefHandle))
+
+       (foreachs elem offsetPair
+      (setq currentPoint (rodAddPoints currentPoint elem))
+      (setq lstOutterPoints (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX334" title="R5RS Skill/Skill++ form">append</a> lstOutterPoints (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> currentPoint)))
+  ) 
+       (setq prevDir direction)
+     (setq iteration (add1 iteration))
+
+  ) 
+  (when (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (stringp coreLibrary) (stringp coreCell) (nequal coreLibrary " ") (nequal coreCell " "))
+
+   (when (ddGetObj coreLibrary coreCell)
+    (setq Cc (makeInstance 'TcfFloorplanCluster
+          ?ClusterName "core"
+          ?isBaseACell t
+          ?isSeparateCv nil
+          ?isLeaf t
+  ))
+
+    (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterSetBase" title="layout1func">TcfFloorplanClusterSetBase</a> Cc coreCell coreLibrary nil 0.0 0.0 "R0")
+
+    (setq Ic (makeInstance 'TcfClusterInstance
+          ?InstanceName "inst_core"
+          ?RefName ""
+          ?RefOffsetX 0.0
+          ?RefOffsetY 0.0
+          ?RefAlignHandle "lL"
+          ?RefRefHandle "uL"
+          ?isRefPlaced t
+          ?isPlaced nil
+          ?Cluster Cc))
+  Ic->AlignTo <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a>  (sprintf nil "Previous&gt;%d" (add1 iteration))
+  (<a class="applied-name" href="layout1func-1.html#TcfFloorplanAddClusterToCluster" title="layout1func">TcfFloorplanAddClusterToCluster</a> F Ic)
+
+  )) 
+  (setq I (makeInstance 'TcfClusterInstance ?InstanceName "top" ?RefName "top_rod" ?RefOffsetX 0.0 ?RefOffsetY 0.0 ?RefAlignHandle "cC" ?RefRefHandle "cC" ?isRefPlaced t ?isPlaced nil ?Cluster F))
+ (setq floorplan (<a class="applied-name" href="layout1func-1.html#TcfFloorplanClusterPlace" title="layout1func">TcfFloorplanClusterPlace</a> cvId F I))
+ (dbSave cvId)
+
+  (rodAlign
+  ?alignObj (rodGetObj floorplan->BaseRodName cvId)
+  ?alignHandle "uL"
+  ?refPoint (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 1.0 1.0)
+  ?refHandle "lL"
+  ?maintain nil) (dbSave cvId)
+ (dbRefreshCellView cvId)
+
+  (setq cornerCv (dbOpenCellViewByType (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "ll")) "Library") (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "ll")) "CellName") "layout" "maskLayout" "r"))
+ (setq sideCv (dbOpenCellViewByType (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "bottom")) "Library") (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "bottom")) "CellName") "layout" "maskLayout" "r"))
+ (setq YSizing (TcfGetYdim sideCv ?orientation (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "bottom")) "Orientation")))
+ (dbClose sideCv)
+ (setq sideCv (dbOpenCellViewByType (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "left")) "Library") (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "left")) "CellName") "layout" "maskLayout" "r"))
+ (setq XSizing (TcfGetXdim sideCv ?orientation (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "left")) "Orientation")))
+ (dbClose sideCv)
+ (dbClose cornerCv)
+
+  (rodAlign
+  ?alignObj (rodGetObj floorplan->BaseRodName cvId)
+  ?alignHandle "uL"
+  ?refPoint (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> lowerXAlign (plus lowerYAlign
+            (TcfGetYdim cornerCv ?orientation (TcfXmlFind ?root (get lstFrameCells (strcat type "_" "ll")) "Orientation"))))
+  ?refHandle "lL"
+  ?maintain nil)
+ (dbClose cornerCv)
+
+  (setq fullinst (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> cvId~>instances))
+ (setq counter 0)
+ (foreachs elem cvId~>instances
+     (when (equal (mod (int (times 100.0 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> counter fullinst))) 20) 0)
+    (TccInfo "TcfFrameContourBuilder" (sprintf nil "Unalign progress: %L percent" (int 100*counter/fullinst)))
+    (gc)) (rodUnAlign (rodGetObj elem~>name cvId))
+     (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal elem~>cellName "auxMosaicCell")
+      (dbFlattenInst elem 1 t)
+  ) (setq counter (add1 counter))
+  ) 
+  (setq outershape (dbCreatePolygon
+       cvId
+       (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "purple" (TcfGetDefaultLPPDebugPurpose ?cvId cvId))
+       lstOutterPoints
+  )) 
+  (setq internalshape (TcfLayerSize cvId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "red" (TcfGetDefaultLPPDebugPurpose ?cvId cvId)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> outershape) -XSizing -YSizing))
+ (setq frameshapes (mapcar (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX98" title="R5RS Skill/Skill++ form">lambda</a> (<span class="local-name-binding">x</span>) (dbCreateRect cvId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "grey" (TcfGetDefaultLPPDebugPurpose ?cvId cvId)) x))
+         (TcfGetBoundingBoxes cvId ?layer (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "FrameConstruct" (TcfGetDefaultLPPKeepoutPurpose ?cvId cvId)) ?descend t)
+  ))
+ (setq internalshape (dbLayerAndNot cvId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "yellow" (TcfGetDefaultLPPDebugPurpose ?cvId cvId))
+            (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> internalshape))
+            (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> frameshapes))))
+
+  (setq bandshape (dbLayerAndNot cvId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "pink" (TcfGetDefaultLPPDebugPurpose ?cvId cvId))
+           (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> outershape))
+           (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> internalshape))
+  )) 
+  (setq lstShapes (setofs x (getSGq cvId shapes)
+       (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> (getSGq x lpp))
+           (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "boundary"
+              (TcfGetDefaultLPPPurpose ?cvId cvId)
+              (TcfGetDefaultLPPDebugPurpose ?cvId cvId))))))
+ (foreachs shape lstShapes
+     (setq tmpShape (dbLayerAndNot cvId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "green" (TcfGetDefaultLPPDebugPurpose ?cvId cvId)) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> shape) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> outershape)))
+     (when tmpShape
+    (dbLayerOr cvId (getSGq shape lpp) (TccFlattenList (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> tmpShape)) nil)
+    (dbDeleteObject shape)
+  )) 
+  (when outerLayers
+   (foreachs m  (parseString outerLayers)
+
+    mlpp <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (parseString m ".")
+    (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> mlpp) lstKeepGenAwayLayers) (equal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> mlpp) 1))
+     (progn
+       (foreachs lpppurpose (TcfGetDefaultLPPFillerKeepGenAwayPurpose ?cvId cvId)
+        (dbLayerOr
+         cvId
+         (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> mlpp) lpppurpose)
+         bandshape
+         nil)
+  )) (dbLayerOr
+       cvId
+       (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> mlpp) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> mlpp))
+       bandshape
+       nil
+  )) )) 
+ (when innerLayers
+   (foreachs m (parseString innerLayers)
+    mlpp <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (parseString m ".")
+    (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX117" title="R5RS Skill/Skill++ form">and</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> mlpp) lstKeepGenAwayLayers) (equal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> mlpp) 1))
+     (progn
+       (foreachs lpppurpose (TcfGetDefaultLPPFillerKeepGenAwayPurpose ?cvId cvId)
+        (dbLayerOr
+         cvId
+         (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> mlpp) lpppurpose)
+         internalshape
+         nil
+  )
+  )) 
+      (progn
+     (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (nth 2 mlpp)
+      (TcfLayerSize cvId (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> mlpp) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> mlpp)) internalshape (atof (nth 2 mlpp))/1000.0 (atof (nth 2 mlpp))/1000.0)
+       (setq tmpShape  (dbLayerOr
+            cvId
+            (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> mlpp) (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> mlpp))
+            internalshape
+            nil))
+
+  )) )) ) 
+  (mapcar 'dbDeleteObject (setofs shapes cvId~>shapes (equal shapes~>lpp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "background" "drawing"))))
+ (mapcar 'dbDeleteObject (setofs shapes cvId~>shapes (equal shapes~>lpp (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "text" "drawing"))))
+ (mapcar 'dbDeleteObject (setofs shapes cvId~>shapes (equal (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> shapes~>lpp) (TcfGetDefaultLPPDebugPurpose ?cvId cvId))))
+
+  (dbSave cvId)
+ (TccInfo "TcfFrameContourBuilder" "Succesfully finished.")
+ t
+  )) 
+<a name="TcfCreateInstance"></a><a name="TcfCreateInstance"></a><span><a href="../layout1func.html#TcfCreateInstance"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfCreateInstance</span> (cvId LibName CellName @key (Orientation "R0") (MosaicX 1) (MosaicY 1) (lowerXAlign 0.0) (lowerYAlign 0.0))
+  (let (auxMosaicCellCv auxMosaicCellInst lstOffset offsetX offsetY cellid cellBBox)
+ (setq auxMosaicCellCv (dbOpenCellViewByType (TccLib "scribe") "auxMosaicCell"  "layout" "maskLayout" "r"))
+ (setq cellid (dbOpenCellViewByType LibName CellName  "layout" "maskLayout" "r"))
+ (setq cellBBox (TcfGetBoundingBox cellid))
+
+  (setq lstOffset (TcfGetOffsetsBBox2BBox Orientation cellid cellBBox))
+ (setq offsetX (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX321" title="R5RS Skill/Skill++ form">car</a> lstOffset))
+ (setq offsetY (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX325" title="R5RS Skill/Skill++ form">cadr</a> lstOffset))
+
+ (setq auxMosaicCellInst (dbCreateParamInst cvId auxMosaicCellCv
+              "AMosaicCell"
+              0:0
+              "R0"
+              1
+              (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>
+            (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "MosaicName" "string" "AMosaic")
+            (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "Orientation" "string" Orientation)
+            (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "columns" "int" MosaicX)
+            (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "rows" "int" MosaicY)
+            (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "CellName" "string" CellName)
+            (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "LibraryName" "string" LibName)
+  )))
+ (dbClose auxMosaicCellCv)
+ (dbClose cellid)
+ (rodAlign
+  ?refPoint (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> lowerXAlign lowerYAlign)
+  ?alignHandle "lL"
+  ?alignObj (rodGetObj "AMosaicCell" cvId)
+  ?refHandle "lL"
+  ?xSep offsetX
+  ?ySep offsetY
+  ?maintain nil)
+
+  (dbFlattenInst auxMosaicCellInst 1 t)
+ t
+  )) <a name="TcfFrameCellLocationReflect"></a>
+<a name="TcfFrameCellLocationReflect"></a><span><a href="../layout1func.html#TcfFrameCellLocationReflect"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfFrameCellLocationReflect</span> (location)
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX115" title="R5RS Skill/Skill++ form">case</a> location
+ ("top" "bottom")
+ ("bottom" "top")
+ ("left" "right")
+ ("right" "left")
+ ("lr" "ul_ext")
+ ("ll" "ur_ext")
+ ("ur" "ll_ext")
+ ("ul" "lr_ext")
+ ("lr_ext" "ul")
+ ("ll_ext" "ur")
+ ("ur_ext" "ll")
+ ("ul_ext" "lr")
+  )) </pre></font><div>&nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p></div></body></html>

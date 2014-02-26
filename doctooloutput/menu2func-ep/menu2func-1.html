@@ -1,0 +1,609 @@
+<html><head><link href="stylesheets/program.css" rel="stylesheet" title="program" type="text/css" /> <title>Source file</title></head><body bgcolor="#ffffff" text="#000000" link="#000000" vlink="#000000"><font family="Monospace"><pre><a name="TcfBeardFrameBuilderForm"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBeardFrameBuilderForm</span> (obj )
+  (let (libf cellf xf yf srclibf llf urf ulf lrf topf bottomf leftf rightf beardform measuredRegion xfunits yfunits innerkeep outerkeep innerextra outerextra m0SpacerBand preservepcell fillerCv xfiller yfiller formFile addpycheck)
+
+  (setq fillerCv (dbOpenCellViewByType (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Library")
+  (TcfXmlFind (TcfGetProjectName) "stacked_filler" "CellName")
+  "layout" "maskLayout" "r"))
+
+ (setq yfiller (TcfGetYdim fillerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Orientation")))
+ (setq xfiller (TcfGetXdim fillerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Orientation")))
+
+ (setq libf (hiCreateStringField
+ ?name 'libf
+ ?prompt "Library"
+ ?defValue (geGetEditCellView)~>libName
+ ?editable t))
+
+ (setq cellf (hiCreateStringField
+  ?name 'cellf
+  ?prompt "Cell"
+  ?defValue (geGetEditCellView)~>cellName
+  ?editable t))
+
+ (setq measuredRegion
+ (hiCreateCyclicField
+  ?name 'measuredRegion
+  ?prompt  "Measured region"
+  ?choices (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "Inner region" "Outer region")
+  ?defValue   "Inner region"
+  )
+  )
+
+ (setq xf (hiCreateStringField
+  ?name 'xf
+  ?prompt "PGD dimension"
+  ?defValue (sprintf nil "%f" (times 10.0 xfiller))
+  ?editable t))
+
+ (setq xfunits
+ (hiCreateCyclicField
+  ?name 'xfunits
+  ?prompt  "Units for PGD dimension"
+  ?choices (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "microns" "filler cells")
+  ?defValue   "microns"
+  )
+  )
+
+ (setq yf (hiCreateStringField
+  ?name 'yf
+  ?prompt "OGD dimension"
+  ?defValue (sprintf nil "%f" (times 20.0 yfiller))
+  ?editable t))
+
+ (setq yfunits
+ (hiCreateCyclicField
+  ?name 'yfunits
+  ?prompt  "Units for OGD dimension"
+  ?choices (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "microns" "filler cells")
+  ?defValue   "microns"
+  )
+  )
+
+ (setq innerkeep (hiCreateStringField
+   ?name 'innerkeep
+   ?prompt "Inner extra layers"
+   ?defValue (strcat "noSDR.id" " " "FrameConstruct." (TcfGetDefaultLPPPurpose ?cvId (geGetEditCellView)) " " (buildString (TcfGetDefaultKeepGenAwayLayers ?cvId (geGetEditCellView)) " "))
+   ?editable t))
+
+ (setq outerkeep (hiCreateStringField
+   ?name 'outerkeep
+   ?prompt "Outer extra layers"
+   ?defValue (buildString (TcfGetDefaultKeepGenAwayLayers ?cvId (geGetEditCellView)) " ")
+   ?editable t))
+
+  (setq addpycheck (hiCreateBooleanButton
+ ?name 'addpycheck
+ ?buttonText "Add POLYCHECK over inner region?"
+ ?defValue (stringp (TcfXmlFind (TcfGetProjectName) "filler_polycheck" "CellName"))
+ ?enabled t ))
+
+  (setq formFile (hiCreateStringField
+  ?name 'formFile
+  ?prompt "Load/save form inputs from/to this file: "
+  ?defValue "~/forminputs.xml"
+  ?editable t))
+
+ (setq beardform (hiCreateAppForm
+   ?name 'beardform
+   ?formTitle "Beard Frame Builder"
+   ?callback "(TcfBeardBuilderCB beardform)"
+   ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> libf cellf measuredRegion xf xfunits yf yfunits addpycheck innerkeep outerkeep formFile)
+   ?buttonLayout  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 'ApplyCancelDef
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 'BrowseXml 'TcfXmlBrowse)
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 'LoadXml 'TcfXmlToForm)
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 'SaveXml 'TcfFormToXml)
+  )
+   ?initialSize 1200:1700
+   ?unmapAfterCB   t
+  ))
+
+ (dbClose fillerCv)
+ (hiDisplayForm beardform)
+
+  ))
+
+<a name="TcfBeardBuilderCB"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfBeardBuilderCB</span> (f)
+  (let (cvId fillerCv xfiller yfiller xf yf x y gapCv lowerXAlign lowerYAlign)
+
+  (setq xf (atof f->xf->value))
+ (setq yf (atof f->yf->value))
+
+  (setq fillerCv (dbOpenCellViewByType (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Library")
+  (TcfXmlFind (TcfGetProjectName) "stacked_filler" "CellName")
+  "layout" "maskLayout" "r"))
+
+ (setq yfiller (TcfGetYdim fillerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Orientation")))
+ (setq xfiller (TcfGetXdim fillerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Orientation")))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal f->xfunits->value "microns") (setq x (sub1 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> xf xfiller)))) (setq x (sub1 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a> xf))))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal f->yfunits->value "microns") (setq y (sub1 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> yf yfiller)))) (setq y (sub1 (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a> yf))))
+
+  (when (equal f->measuredRegion->value "Outer region")
+   (setq x (difference x 2))
+   (setq y (difference y 2))
+  ) 
+  (setq cvId (dbOpenCellViewByType f->libf->value f->cellf->value "layout" "maskLayout" "w"))
+ (setq lowerXAlign (minus (times (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> xfiller 2) (plus x 2))))
+ (setq lowerYAlign (minus (times (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> yfiller 2) (plus y 2))))
+ (TcfCreateContourFrame (symbolToString (concat "E" x " N" y " W" x " S" y))
+   "beard"
+   f->innerkeep->value
+   f->outerkeep->value
+   (TcfGetProjectName)
+   cvId
+   ?lowerXAlign lowerXAlign
+   ?lowerYAlign lowerYAlign)
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> f->addpycheck->value
+  (TcfCreateInstance cvId
+   (TcfXmlFind (TcfGetProjectName) "filler_polycheck" "Library")
+   (TcfXmlFind (TcfGetProjectName) "filler_polycheck" "CellName")
+   ?Orientation (TcfXmlFind (TcfGetProjectName) "filler_polycheck" "Orientation")
+   ?MosaicX (plus x 1)
+   ?MosaicY (plus y 1)
+   ?lowerXAlign (minus (times (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> xfiller 2) (plus x 1)))
+   ?lowerYAlign (minus (times (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> yfiller 2) (plus y 1))))
+  ) 
+ (dbClose fillerCv)
+ (dbClose cvId)
+
+ t
+  ))
+
+<a name="TcfEOWFrameBuilderFormCB"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfEOWFrameBuilderFormCB</span> (beardform)
+  (let (cvIdu)
+
+ beardform->outputcell->value <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (strcat beardform->cellf->value "_cont")
+ beardform->outputcellblank->value <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (strcat beardform->cellf->value "_blank")
+ beardform->formFile->value <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (strcat "~/" beardform->cellf->value "_cont_blank.xml")
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> beardform->cellf->value (ddGetObj beardform->libf->value)~>cells~>name)
+  (progn
+ (setq cvIdu (dbOpenCellViewByType beardform->libf->value beardform->cellf->value "layout" "maskLayout" "r"))
+ beardform->xf->value <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (sprintf nil "%f" (TcfGetXdim cvIdu))
+ beardform->yf->value <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (sprintf nil "%f" (TcfGetYdim cvIdu))
+ (dbClose cvIdu)
+  ) 
+   (progn
+  (hiDisplayAppDBox
+   ?name (gensym 'trReminderDialogBox ) <span class="comment">; unique variable</span><br />   ?dboxBanner "Warning"
+   ?dboxText "Input cell does not exist."
+   ?dialogStyle 'modeless
+   ?buttonLayout 'Close
+  )) ) 
+ t
+  )) <a name="TcfEOWFrameBuilderForm"></a>
+<a name="TcfEOWFrameBuilderForm"></a><span><a href="../menu2func.html#TcfEOWFrameBuilderForm"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfEOWFrameBuilderForm</span> (obj )
+
+  (let (libf cellf xf yf srclibf llf urf ulf lrf topf bottomf leftf rightf beardform measuredRegion xfunits yfunits innerkeep outerkeep innerextra outerextra m0SpacerBand preservepcell fillerCv xfiller yfiller frametype separatecell outputcell outputlibrary innerkeepblank outerkeepblank formFile outputcellblank)
+
+  (setq fillerCv (dbOpenCellViewByType (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Library")
+  (TcfXmlFind (TcfGetProjectName) "stacked_filler" "CellName")
+  "layout" "maskLayout" "r"))
+
+ (setq yfiller (TcfGetYdim fillerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Orientation")
+  ))
+ (setq xfiller (TcfGetXdim fillerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Orientation")
+  ))
+
+ (setq libf (hiCreateStringField
+ ?name 'libf
+ ?prompt "Library"
+ ?defValue (geGetEditCellView)~>libName
+ ?editable t))
+ (setq cellf (hiCreateStringField
+  ?name 'cellf
+  ?prompt "Cell"
+  ?defValue (geGetEditCellView)~>cellName
+  ?editable t
+  ?callback "(TcfEOWFrameBuilderFormCB beardform)"
+  ))
+
+ (setq frametype
+ (hiCreateCyclicField
+  ?name 'frametype
+  ?prompt  "Frame type"
+  ?choices (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "Container" "Blank")
+  ?defValue   "Container"
+  ?enabled nil))
+
+ (setq measuredRegion
+ (hiCreateCyclicField
+  ?name 'measuredRegion
+  ?prompt  "Measured region"
+  ?choices (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "Inner region" "Outer region")
+  ?defValue   "Inner region"
+  ?enabled nil
+  )
+  )
+
+ (setq xf (hiCreateStringField
+  ?name 'xf
+  ?prompt "PGD dimension"
+  ?defValue (sprintf nil "%f" (TcfGetXdim (geGetEditCellView)))
+  ?editable nil))
+
+ (setq xfunits
+ (hiCreateCyclicField
+  ?name 'xfunits
+  ?prompt  "Units for PGD dimension"
+  ?choices (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "microns" "filler cells")
+  ?defValue   "microns"
+  ?enabled nil
+  )
+  )
+
+ (setq yf (hiCreateStringField
+  ?name 'yf
+  ?prompt "OGD dimension"
+  ?defValue (sprintf nil "%f" (TcfGetYdim (geGetEditCellView)))
+  ?editable nil))
+
+ (setq yfunits
+ (hiCreateCyclicField
+  ?name 'yfunits
+  ?prompt  "Units for OGD dimension"
+  ?choices (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> "microns" "filler cells")
+  ?defValue   "microns"
+  ?enabled nil))
+
+ (setq innerkeep (hiCreateStringField
+   ?name 'innerkeep
+   ?prompt "Container Inner extra layers"
+   ?defValue (strcat "FrameConstruct." (TcfGetDefaultLPPKeepoutPurpose ?cvId (geGetEditCellView)) " chkBoundary.boundary")
+   ?editable t))
+
+ (setq outerkeep (hiCreateStringField
+   ?name 'outerkeep
+   ?prompt "Container Outer extra layers"
+   ?defValue (strcat "FrameConstruct." (TcfGetDefaultLPPKeepoutPurpose ?cvId (geGetEditCellView)) " chkBoundary.boundary" " " (buildString (TcfGetDefaultKeepGenAwayLayers ?cvId (geGetEditCellView)) " "))
+   ?editable t))
+
+ (setq innerkeepblank (hiCreateStringField
+  ?name 'innerkeepblank
+  ?prompt "Blank Inner extra layers"
+  ?defValue (strcat "FrameConstruct." (TcfGetDefaultLPPKeepoutPurpose ?cvId (geGetEditCellView)) " chkBoundary.boundary")
+  ?editable t))
+
+ (setq outerkeepblank (hiCreateStringField
+  ?name 'outerkeepblank
+  ?prompt "Blank Outer extra layers"
+  ?defValue (strcat "FrameConstruct." (TcfGetDefaultLPPKeepoutPurpose ?cvId (geGetEditCellView)) " chkBoundary.boundary" " " (buildString (TcfGetDefaultKeepGenAwayLayers ?cvId (geGetEditCellView)) " "))
+  ?editable t))
+
+ (setq separatecell (hiCreateBooleanButton
+   ?name 'separatecell
+   ?buttonText "Generate layout as a separate cell?"
+   ?defValue t
+   ?enabled t
+   ?callback "(if beardform-&gt;separatecell-&gt;value
+   (progn
+  beardform-&gt;frametype-&gt;value = \"Container\"
+  beardform-&gt;measuredRegion-&gt;value = \"Inner region\"
+  beardform-&gt;xfunits-&gt;value = \"microns\"
+  beardform-&gt;yfunits-&gt;value = \"microns\"
+  beardform-&gt;frametype-&gt;enabled = nil
+  beardform-&gt;measuredRegion-&gt;enabled = nil
+  beardform-&gt;xfunits-&gt;enabled = nil
+  beardform-&gt;yfunits-&gt;enabled = nil
+  beardform-&gt;xf-&gt;editable = nil
+  beardform-&gt;yf-&gt;editable = nil
+  t
+  )
+
+ (progn
+   beardform-&gt;frametype-&gt;enabled = t
+   beardform-&gt;xfunits-&gt;enabled = t
+   beardform-&gt;yfunits-&gt;enabled = t
+   beardform-&gt;xf-&gt;editable = t
+   beardform-&gt;yf-&gt;editable = t
+   beardform-&gt;measuredRegion-&gt;enabled = t
+   t
+
+  )
+
+  )"
+  ))
+
+ (setq outputlibrary (hiCreateStringField
+ ?name 'outputlibrary
+ ?prompt "Output library: "
+ ?defValue  (geGetEditCellView)~>libName
+ ?editable t))
+
+ (setq outputcell (hiCreateStringField
+ ?name 'outputcell
+ ?prompt "Output container cell: "
+ ?defValue (strcat (geGetEditCellView)~>cellName "_cont")
+ ?editable t))
+
+ (setq outputcellblank (hiCreateStringField
+   ?name 'outputcellblank
+   ?prompt "Output blank cell: "
+   ?defValue (strcat (geGetEditCellView)~>cellName "_blank")
+   ?editable t))
+
+  (setq formFile (hiCreateStringField
+  ?name 'formFile
+  ?prompt "Load/save form inputs from/to this file: "
+  ?defValue (strcat "~/" (geGetEditCellView)~>cellName "_cont_blank.xml")
+  ?editable t))
+
+ (setq beardform (hiCreateAppForm
+   ?name 'beardform
+   ?formTitle "Container/Blank Frame Builder"
+   ?callback "(TcfEOWBuilderCB beardform)"
+   ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> frametype libf cellf measuredRegion xf xfunits yf yfunits separatecell outputlibrary outputcell innerkeep outerkeep outputcellblank innerkeepblank outerkeepblank formFile)
+
+   ?buttonLayout  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 'ApplyCancel
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 'BrowseXml 'TcfXmlBrowse)
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 'LoadXml 'TcfXmlToForm)
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 'SaveXml 'TcfFormToXml))
+   ?initialSize 3000:2700
+   ?unmapAfterCB t
+  ))
+
+ (dbClose fillerCv)
+ (hiDisplayForm beardform)))
+
+<a name="TcfEOWBuilderCB"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfEOWBuilderCB</span> (f)
+  (let (cvId  xf yf leftcornerCv bottomcornerCv leftwidth bottomheight cvIdu)
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX340" title="R5RS Skill/Skill++ form">member</a> f->cellf->value (ddGetObj f->libf->value)~>cells~>name)
+  (progn
+ (setq cvIdu (dbOpenCellViewByType f->libf->value f->cellf->value "layout" "maskLayout" "r"))
+ f->xf->value <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (sprintf nil "%f" (TcfGetXdim cvIdu))
+ f->yf->value <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (sprintf nil "%f" (TcfGetYdim cvIdu))
+ (dbClose cvIdu)
+  )) 
+  (setq xf (atof f->xf->value))
+ (setq yf (atof f->yf->value))
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX304" title="R5RS Skill/Skill++ form">not</a> f->separatecell->value)
+  (progn
+ (setq cvId (dbOpenCellViewByType f->libf->value f->cellf->value "layout" "maskLayout" "w"))
+ (<a class="applied-name" href="menu2func-1.html#TcfEOWFrameBuilderCore" title="menu2func">TcfEOWFrameBuilderCore</a> cvId f->frametype->value xf yf f->innerkeep->value f->outerkeep->value ?xunits f->xfunits->value ?yunits f->yfunits->value ?measuredRegion f->measuredRegion->value)
+ (dbClose cvId)
+  ) 
+   (progn
+ (setq cvId (dbOpenCellViewByType f->outputlibrary->value f->outputcell->value "layout" "maskLayout" "w"))
+  (<a class="applied-name" href="menu2func-1.html#TcfEOWFrameBuilderCore" title="menu2func">TcfEOWFrameBuilderCore</a> cvId "Container" xf yf f->innerkeep->value f->outerkeep->value ?xunits f->xfunits->value ?yunits f->yfunits->value ?measuredRegion "Inner region" ?coreLibrary f->libf->value ?coreCell f->cellf->value)
+  (dbClose cvId)
+
+ (setq leftcornerCv (dbOpenCellViewByType (TcfXmlFind (TcfGetProjectName) "eow_left" "Library")
+ (TcfXmlFind (TcfGetProjectName) "eow_left" "CellName")
+ "layout" "maskLayout" "r"))
+
+  (setq bottomcornerCv (dbOpenCellViewByType (TcfXmlFind (TcfGetProjectName) "eow_bottom" "Library")
+   (TcfXmlFind (TcfGetProjectName) "eow_bottom" "CellName")
+   "layout" "maskLayout" "r"))
+
+  (setq leftwidth (TcfGetXdim leftcornerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) "eow_left" "Orientation")))
+
+  (setq bottomheight (TcfGetYdim bottomcornerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) "eow_bottom" "Orientation")))
+
+  (setq cvId (dbOpenCellViewByType f->outputlibrary->value f->outputcellblank->value "layout" "maskLayout" "w"))
+  (<a class="applied-name" href="menu2func-1.html#TcfEOWFrameBuilderCore" title="menu2func">TcfEOWFrameBuilderCore</a> cvId "Blank" xf+2*leftwidth yf+2*bottomheight f->innerkeepblank->value f->outerkeepblank->value ?xunits f->xfunits->value ?yunits f->yfunits->value ?measuredRegion "Inner region")
+  (dbClose cvId)
+  (dbClose leftcornerCv)
+  (dbClose bottomcornerCv)
+  )) 
+ t
+  ))
+
+<a name="TcfEOWFrameBuilderCore"></a><span></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfEOWFrameBuilderCore</span> (cvId frametype xf yf innerkeep outerkeep @key (xunits "microns") (yunits "microns") (measuredRegion "Inner region") (coreLibrary nil) (coreCell nil))
+  (let (fillerCv xfiller yfiller lowerXAlign lowerYAlign llcornerCv yshift xshift leftcornerCv bottomcornerCv leftheight bottomwidth x y leftwidth bottomheight)
+
+ (TccInfo "TcfEOWFrameBuilderCore" (sprintf nil "Starting core routine for frame type=%L." frametype))
+  (setq fillerCv (dbOpenCellViewByType (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Library")
+  (TcfXmlFind (TcfGetProjectName) "stacked_filler" "CellName")
+  "layout" "maskLayout" "r"))
+
+ (setq llcornerCv (dbOpenCellViewByType (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "ll" (TcfFrameCellLocationReflect "ll"))) "Library")
+ (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "ll" (TcfFrameCellLocationReflect "ll"))) "CellName")
+ "layout" "maskLayout" "r"))
+
+ (setq leftcornerCv (dbOpenCellViewByType (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "left" (TcfFrameCellLocationReflect "left"))) "Library")
+   (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "left" (TcfFrameCellLocationReflect "left"))) "CellName")
+   "layout" "maskLayout" "r"))
+
+ (setq bottomcornerCv (dbOpenCellViewByType (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "bottom" (TcfFrameCellLocationReflect "bottom"))) "Library")
+  (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "bottom" (TcfFrameCellLocationReflect "bottom"))) "CellName")
+  "layout" "maskLayout" "r"))
+
+ (setq yfiller (TcfGetYdim fillerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Orientation")))
+ (setq xfiller (TcfGetXdim fillerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) "stacked_filler" "Orientation")))
+
+ (setq leftheight (TcfGetYdim leftcornerCv
+   ?orientation (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "left" (TcfFrameCellLocationReflect "left"))) "Orientation")))
+ (setq leftwidth (TcfGetXdim leftcornerCv
+  ?orientation (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "left" (TcfFrameCellLocationReflect "left"))) "Orientation")))
+
+ (setq bottomwidth (TcfGetXdim bottomcornerCv
+ ?orientation (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "bottom" (TcfFrameCellLocationReflect "bottom"))) "Orientation")))
+ (setq bottomheight (TcfGetYdim bottomcornerCv
+ ?orientation (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "bottom" (TcfFrameCellLocationReflect "bottom"))) "Orientation")))
+ 
+ (setq yshift (TcfGetYdim llcornerCv ?orientation (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "ll" (TcfFrameCellLocationReflect "ll"))) "Orientation")))
+ (setq xshift (TcfGetXdim llcornerCv ?orientation (TcfXmlFind (TcfGetProjectName) (strcat "eow_" (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal frametype "Container") "ll" (TcfFrameCellLocationReflect "ll"))) "Orientation")))
+
+ (setq lowerXAlign 0.0)
+ (setq lowerYAlign yshift)
+
+  (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal xunits "microns") (setq x (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (difference xf (times 2 (difference xshift leftwidth)))
+ bottomwidth
+  ))) (setq x (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a> xf)))
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal yunits "microns") (setq y (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a> (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (difference yf (times 2 (difference yshift bottomheight)))
+ leftheight))) (setq y (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a> yf)))
+
+  (when (equal measuredRegion "Outer region")
+   (setq x (difference x
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a>
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (times 2 (difference xshift leftwidth))
+ bottomwidth))))
+   (setq y (difference y
+  (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX268" title="R5RS Skill/Skill++ form">round</a>
+   (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX258" title="R5RS Skill/Skill++ form">quotient</a> (times 2 (difference yshift bottomheight))
+ leftheight))))
+  ) 
+  (errset (dbClose llcornerCv))
+ (errset (dbClose leftcornerCv))
+ (errset (dbClose bottomcornerCv))
+ (dbClose fillerCv)
+ (TcfCreateContourFrame (symbolToString (concat "E" x " N" y " W" x " S" y))
+   "eow" innerkeep
+   outerkeep
+   (TcfGetProjectName)
+   cvId
+   ?lowerXAlign 0.0 ?lowerYAlign 0.0 ?coreLibrary coreLibrary
+   ?coreCell coreCell
+   ?reflect (nequal frametype "Container"))
+
+  )) 
+ <a name="TctQuickStreamGUI"></a> <a name="TctQuickStreamGUI"></a><span><a href="../menu2func.html#TctQuickStreamGUI"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctQuickStreamGUI</span> (obj )
+   (let (CellNameField defLib defCell defPath defStreamName quickStreamForm LibNameField PathField StreamNameField cv)
+  (setq cv (geGetEditCellView))
+  defLib <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> cv~>libName
+  defCell <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> cv~>cellName
+  defStreamName <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (strcat defCell ".stm")
+  defPath <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (strcat (getShellEnvVar "WORK_AREA_ROOT_DIR") "/pds/stream")
+
+  CellNameField <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (hiCreateStringField ?name 'CellNameField
+   ?prompt "Cell Name:"
+   ?value defCell
+   ?callback "{ quickStreamForm-&gt;StreamNameField-&gt;value = (TctStreamNameCB CellNameField-&gt;value) }")
+
+  LibNameField <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (hiCreateStringField ?name 'LibNameField
+  ?prompt "Library Name:"
+  ?value defLib)
+
+  PathField <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (hiCreateStringField ?name 'PathField
+  ?prompt "Stream File Path:"
+  ?value defPath)
+
+  StreamNameField <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (hiCreateStringField ?name 'StreamNameField
+  ?prompt "Stream File Name:"
+  ?defValue defStreamName
+  ?value defStreamName)
+
+  quickStreamForm <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (hiCreateAppForm ?name 'quickStreamForm
+ ?fields (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a> 'CellNameField
+   'LibNameField
+   'PathField
+   'StreamNameField)
+ ?formTitle "Quick STREAM File (pCells are OK)"
+ ?callback "{ (TctQuickStreamCB quickStreamForm) }")
+  (hiDisplayForm 'quickStreamForm)
+  t
+  )) 
+
+<a name="TctQuickStreamCB"></a><a name="TctQuickStreamCB"></a><span><a href="../menu2func.html#TctQuickStreamCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctQuickStreamCB</span> (formHandle)
+  (<a class="applied-name" href="menu2func-1.html#TctMakeQuickStream" title="menu2func">TctMakeQuickStream</a>
+   formHandle->CellNameField->value
+   formHandle->LibNameField->value
+   formHandle->PathField->value
+   formHandle->StreamNameField->value)
+  ) <a name="TctStreamNameCB"></a>
+<a name="TctStreamNameCB"></a><span><a href="../menu2func.html#TctStreamNameCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctStreamNameCB</span> (cellName)
+  (let (newFileName)
+ newFileName <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (strcat cellName ".stm")
+ newFileName
+  )) <a name="TctMakeQuickStream"></a>
+<a name="TctMakeQuickStream"></a><span><a href="../menu2func.html#TctMakeQuickStream"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TctMakeQuickStream</span> (cellName libName path streamName)
+  (let (runDir streamFileName stm1 ProcName )
+
+ (setq ProcName "TctQuickStream")
+ runDir <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (strcat (getShellEnvVar "WORK_AREA_ROOT_DIR") "/pds/stream")
+ (TccInfo ProcName (sprintf nil "Streaming out cell %L/%L" libName cellName))
+ streamFileName <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (strcat path "/" streamName)
+ stm1 <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (TctStreamOut libName cellName "layout" runDir streamFileName )
+ (TccInfo ProcName (sprintf nil "Stream File: %L Completed!" stm1))
+
+  streamFileName
+  )) <a name="TcfOasisInGUI"></a>
+<a name="TcfOasisInGUI"></a><span><a href="../menu2func.html#TcfOasisInGUI"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfOasisInGUI</span> (obj )
+  (let (OasisInForm LibraryField CellNameField OasisFileField
+   defLibrary defCellName defOasisFile)
+ defOasisFile= ""
+ defLibrary <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> ""
+ defCellName <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> ""
+ OasisFileField <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (hiCreateStringField
+   ?name 'OasisFileField
+   ?prompt "OasisFile:"
+   ?defValue defOasisFile
+   ?value "")
+ LibraryField <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (hiCreateStringField
+   ?name 'LibraryField
+   ?prompt "Library:"
+   ?defValue defLibrary
+   ?value "")
+
+ CellNameField <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (hiCreateStringField
+   ?name 'CellNameField
+   ?prompt "Top Level Cell:"
+   ?defValue defCellName
+   ?value "")
+ 
+ OasisInForm <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX235" title="R5RS Skill/Skill++ form">=</a> (hiCreateAppForm
+  ?name 'OasisInForm
+  ?fields <a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX332" title="R5RS Skill/Skill++ form">list</a>(OasisFileField
+   LibraryField
+   CellNameField
+  )
+  ?formTitle "Oasis File Import"
+  ?callback "{ (TcfOasisInCB OasisInForm) }")
+ 
+ (hiDisplayForm 'OasisInForm)
+
+  ) 
+  ) <a name="TcfOasisInCB"></a>
+<a name="TcfOasisInCB"></a><span><a href="../menu2func.html#TcfOasisInCB"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfOasisInCB</span> (formHandle)
+  (let (obj )
+ (<a class="applied-name" href="menu2func-1.html#TcfOasisIn" title="menu2func">TcfOasisIn</a>
+  formHandle->OasisFileField->value
+  formHandle->LibraryField->value
+  formHandle->CellNameField->value)
+  )) <a name="TcfOasisIn"></a>
+<a name="TcfOasisIn"></a><span><a href="../menu2func.html#TcfOasisIn"><img src="./images/small-prev.gif" title="Skill/Skill++Doc Manual entry" alt="" border="0" /></a> <br /></span>(<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_7.html#IDX173" title="R5RS Skill/Skill++ form">defun</a> <span class="signature">TcfOasisIn</span> (OasisFile Library CellName)
+  (let (sid Streamoutfunction oasisfunction calibrefunction filepath outputfilename)
+ (setq outputfilename (nth (difference (<a class="scheme-procedure-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_8.html#IDX333" title="R5RS Skill/Skill++ form">length</a> (parseString OasisFile "/")) 1) (parseString OasisFile "/")))
+ 
+ (setq oasisfunction (strcat TCC_GLOBAL_VARS->tccSourcePath "utils/"))
+ (setq filepath (strcat (getShellEnvVar "WORK_AREA_ROOT_DIR") "/rundir/opus/"))
+ 
+ 
+ sid=(ipcBeginProcess (strcat "cp " OasisFile " " filepath outputfilename))
+ (ipcWait sid)
+ (ipcReadProcess sid)
+
+ (TccInfo "TcfOasisIn" (sprintf nil "Creating gds File .... %L" outputfilename))
+ 
+ sid=(ipcBeginProcess (strcat "cd " filepath ";calibredrv -64 " "/nfs/pdx/disks/adg.misc.1/ychen89/util/oasisin/oas_to_stm.tcl" " " outputfilename))
+ (ipcWait sid)
+ (ipcReadProcess sid)
+
+ (setq streaminfunction (strcat "strmin -library " Library " -strmFile " CellName ".gds -layerMap $ISSRUNSETS/PXL/$PROCESS_NAME/p$PROCESS_NAME.map"))
+
+ sid=(ipcBeginProcess streaminfunction)
+ (ipcWait sid)
+ (ipcReadProcess sid)
+ 
+ (<a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX103" title="R5RS Skill/Skill++ form">if</a> (equal (sh "grep ERROR strmIn.log") nil)
+  then
+  sid=(ipcBeginProcess (strcat "rm " CellName ".gds "  CellName ".rep " CellName ".log " CellName ".sum " "strmIn.log "  "oasis_in.drc "))
+  (ipcWait sid)
+  (ipcReadProcess sid)
+  (TccInfo "TcfOasisIn" (sprintf nil "Oasis file in is completed. %L" OasisFile ))
+  <a class="scheme-syntax-name" href="file:///p/advda/elisp/doctool/schemedoc/r5rs/r5rs_6.html#IDX110" title="R5RS Skill/Skill++ form">else</a>
+  (TccInfo "TcfOasisIn" (sprintf nil "Oasis file in is NOT completed. Please check log file: %L" (strcat filepath "strmIn.log")))
+  )
+  )) </pre></font><div>&nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p> &nbsp; <p></p></div></body></html>
