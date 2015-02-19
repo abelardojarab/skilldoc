@@ -899,7 +899,7 @@
      (scheme-report-version-attr (as-symbol (ast-attribute front-matters-ast 'scheme-report-version "r5rs")))
      (rnrs-url-attr (if (or (eq? 'r4rs scheme-report-version-attr) (eq? 'r5rs scheme-report-version-attr))
                         (ast-attribute front-matters-ast 'rnrs-url 
-                           (string-append "file:///p/advda/elisp/doctool/schemedoc/"
+                           (string-append "file://~/workspace/skilldoc/schemedoc/"
                                           (as-string scheme-report-version-attr)"/"))
                         #f))
      (cross-reference-index-attr (as-symbol (ast-attribute front-matters-ast 'cross-reference-index "per-letter")))

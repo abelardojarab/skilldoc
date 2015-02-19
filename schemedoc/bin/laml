@@ -5,6 +5,6 @@
 # Run MzScheme on file from the current directory
 # File is with extension
 #
-/p/advda/elisp/doctool/mzscheme/bin/mzscheme -v -e '(load (string-append "/p/advda/elisp/doctool/schemedoc/" "laml.init"))' -f $PWD/$1 $1 $PWD/
+~/workspace/skilldoc/mzscheme/bin/mzscheme -v -e '(load (string-append "~/workspace/skilldoc/schemedoc/" "laml.init"))' -f $PWD/$1 $1 $PWD/
 
 

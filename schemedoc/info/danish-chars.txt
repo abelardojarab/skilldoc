@@ -1,4 +1,4 @@
-; You can add this to your LAML init file:  .laml
+; You can add that to your LAML init file:  .laml
 ; This will convert the national Danish characters æ, ø, å, Æ, Ø, and Å to their HTML counterparts.
 
 (set-html-char-transformation-entry! html-char-transformation-table 197 "&Aring")

@@ -229,7 +229,7 @@
          (scheme-report-version-attr (as-symbol (unique-ast-attribute manual-ast 'scheme-report-version "r5rs")))
          (rnrs-url-attr (if (or (eq? 'r4rs scheme-report-version-attr) (eq? 'r5rs scheme-report-version-attr))
 			    (unique-ast-attribute manual-ast 'rnrs-url 
-					   (string-append "file:///p/advda/elisp/doctool/schemedoc/"
+					   (string-append "file://~/workspace/skilldoc/schemedoc/"
 							  (as-string scheme-report-version-attr)"/"))
 			    #f))
          (scheme-source-linking-manual (find-asts manual-ast "scheme-source-linking-manual"))

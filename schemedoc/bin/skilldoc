@@ -1,14 +1,13 @@
 #!/usr/intel/bin/bash
-# By Abelardo Jara-Berrocal, 
-# Copied and modified from the LAML installation process - DO NOT EDIT.
-# Usage: skilldoc file
+# By Abelardo Jara-Berrocal
+# Usage: skilldoc <file> <output directory>
 #
-DOCTOOLDIRECTORY=/p/advda/elisp/utils/doctool
+DOCTOOLDIRECTORY=${HOME}/workspace/skilldoc
 CURRENTDIRECTORY="`pwd`"
 filename=$(basename "${1}")
 extension="${filename##*.}"
 filename="${filename%.*}"
-lamlbinary="/p/advda/elisp/utils/doctool/schemedoc/bin/laml"
+lamlbinary="${DOCTOOLDIRECTORY}/schemedoc/bin/laml"
 
 # Check if the input argument exists
 if [ ! -f "$1" ]
@@ -34,19 +33,11 @@ if [ ! -d "$2" ]
     echo
 fi
 
-# Check if the doctooloutput directory exists in your /home directory, if doesnt exist create it
+# Check if the doctooloutput directory exists, if it doesn't exist create it
 if [[ ! -d "${DIRECTORY}" && ! -L "${DIRECTORY}" ]] ; then
     mkdir $DIRECTORY
     cd $DIRECTORY
 fi
-
-cd $DIRECTORY
-# rm -rf ${filename}
-# mkdir ${filename}
-
-# DIRECTORY=~/doctooloutput/${filename}
-# DIRECTORY=~/doctooloutput
-cd ${CURRENTDIRECTORY}
 
 # Copy the ex.scm from sample script to your /home/doctooloutput directory and rename it as your input file
 cp $DOCTOOLDIRECTORY/doctoolsamplescripts/ex.scm "${DIRECTORY}/${filename}_tmp.scm"
@@ -58,7 +49,7 @@ sed -e "s/defun/define/ig" -e "s/defclass/define/ig" -e "s/defmethod/define/ig" 
 sed -e "s/exin.scm/${filename}.scm/ig" -e "s/TctFrameFlows/${filename}/ig" ${DIRECTORY}/${filename}_tmp.scm > ${DIRECTORY}/${filename}_script.scm
 rm ${DIRECTORY}/${filename}_tmp.scm
 
-# Replace/redirect the output directory in the exin.scm file in your /home/doctooloutput directory
+# Replace/redirect the output directory in the exin.scm file in your doctool output directory
 cd $DIRECTORY
 
 # Run the laml tool on the ex.scm file on your /home/doctooloutput directory
@@ -73,8 +64,7 @@ find ./ -name "*.htm*" | xargs sed -i 's#letskill#let#g'
 find ./ -name "*.htm*" | xargs sed -i 's#define#defun#g'
 find ./ -name "*.htm*" | xargs sed -i 's#Scheme#Skill/Skill\+\+#g'
 
-# Remove all the .scm files in your doctooloutput directory (cleaning up things)
-# rm *.manlsp
+# Remove all the .scm files in the doctool output directory (cleaning-up things)
 rm ${filename}_script.scm
 rm ${filename}.scm
 

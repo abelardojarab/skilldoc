@@ -28,11 +28,11 @@
 ; The directory in which the LAML Scheme package is installed.
 ; If LAML processing starts from Emacs (via the functions in emacs-support/laml-execute.el)
 ; this variable indirectly determines the value laml-dir in Scheme.
-(defvar laml-dir "/p/advda/elisp/doctool/schemedoc/")
+(defvar laml-dir "~/workspace/skilldoc/schemedoc/")
 
 
 ; Absolute locations of you Scheme executable (absolute path to exe file).
-(defvar scheme-exec "/p/advda/elisp/doctool/mzscheme/bin/mzscheme")
+(defvar scheme-exec "~/workspace/skilldoc/mzscheme/bin/mzscheme")
 
 ; The Scheme system, such as mzscheme, mzscheme-200, scm, guile, or sisc.
 (defvar scheme-system 'mzscheme-300)

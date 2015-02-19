@@ -19,7 +19,7 @@
   ; Always use forward slashes in the path.
   ; The last character should be a '/'.
 
-  (laml-dir . "/p/advda/elisp/doctool/schemedoc/")        ; <== Edit here
+  (laml-dir . "~/workspace/skilldoc/schemedoc/")        ; <== Edit here
 
 
   ; Which Scheme system do you use:   mzscheme, mzscheme-200, mzscheme-300, scm, guile, sisc, drscheme, or drscheme-300.
@@ -58,7 +58,7 @@
   ; Do not include any file extension (such as '.exe').
   ; If your Scheme system is drscheme or drscheme-300 use the value #f.
 
-  (scheme-exec . "/p/advda/elisp/doctool/mzscheme/bin/mzscheme")           ; <== Edit here
+  (scheme-exec . "~/workspace/skilldoc/mzscheme/bin/mzscheme")           ; <== Edit here
 
 
   ; The full path to your emacs init file (.emacs file).

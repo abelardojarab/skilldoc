@@ -891,7 +891,7 @@
 
 ;; The URL prefix of the LAML software home page at Aalborg University's WWW server.
 ;; An absolute URL to the latest distributed version of LAML.
-(define laml-absolute-url-prefix "file:///p/advda/elisp/doctool/schemedoc/")
+(define laml-absolute-url-prefix "file://~/workspace/skilldoc/schemedoc/")
 
 
 ;; Return a relative or absolute url prefix to the LAML home directory.

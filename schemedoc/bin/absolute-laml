@@ -7,6 +7,6 @@
 # Runs MzScheme on path file.laml.
 #
 cd $1;
-/p/advda/elisp/doctool/mzscheme/bin/mzscheme -v -e '(load (string-append "/p/advda/elisp/doctool/schemedoc/" "laml.init"))' -f $1$2 $2 $1
+~/workspace/skilldoc/mzscheme/bin/mzscheme -v -e '(load (string-append "~/workspace/skilldoc/schemedoc/" "laml.init"))' -f $1$2 $2 $1
 
 
